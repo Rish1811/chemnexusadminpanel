@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Building2, CheckCircle2, Plus, X, Upload } from 'lucide-react';
 
@@ -31,7 +32,7 @@ const Directory = () => {
   const [logoFile, setLogoFile] = useState(null);
 
   const fetchDirectory = () => {
-    fetch('https://mellifluous-dragon-3e1091.netlify.app/api/directory')
+    fetch(${API_BASE_URL}/api/directory')
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -80,7 +81,7 @@ const Directory = () => {
     }
 
     try {
-      const res = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/admin/directory', {
+      const res = await fetch(${API_BASE_URL}/api/admin/directory', {
         method: 'POST',
         body: submitData
       });

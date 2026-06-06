@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Shield, Lock, Megaphone } from 'lucide-react';
@@ -9,7 +10,7 @@ const PolicyView = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://mellifluous-dragon-3e1091.netlify.app/api/policies/${type}`)
+    fetch(`${API_BASE_URL}/api/policies/${type}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {

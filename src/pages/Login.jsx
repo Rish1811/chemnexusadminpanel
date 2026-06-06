@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, AlertCircle } from 'lucide-react';
@@ -16,7 +17,7 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/admin/login', {
+      const response = await fetch(${API_BASE_URL}/api/admin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

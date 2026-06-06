@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { Target, UploadCloud, AlertCircle, Trash2, Power } from 'lucide-react';
 
@@ -17,7 +18,7 @@ const AdManagement = () => {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/admin/banners');
+      const res = await fetch(${API_BASE_URL}/api/admin/banners');
       const data = await res.json();
       if (data.success) {
         setBanners(data.data);
@@ -31,7 +32,7 @@ const AdManagement = () => {
 
   const toggleBannerStatus = async (id, currentStatus) => {
     try {
-      const res = await fetch(`https://mellifluous-dragon-3e1091.netlify.app/api/admin/banners/${id}/status`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/banners/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !currentStatus })
@@ -48,7 +49,7 @@ const AdManagement = () => {
   const deleteBanner = async (id) => {
     if (!window.confirm("Are you sure you want to delete this banner?")) return;
     try {
-      const res = await fetch(`https://mellifluous-dragon-3e1091.netlify.app/api/admin/banners/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/banners/${id}`, {
         method: 'DELETE'
       });
       const data = await res.json();
@@ -88,7 +89,7 @@ const AdManagement = () => {
     formData.append('adTimer', adTimer);
 
     try {
-      const response = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/banners/upload', {
+      const response = await fetch(${API_BASE_URL}/api/banners/upload', {
         method: 'POST',
         body: formData,
       });

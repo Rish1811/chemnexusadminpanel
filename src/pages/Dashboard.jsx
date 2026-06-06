@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { 
   Users, Clock, CreditCard, XCircle, 
@@ -37,7 +38,7 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const res = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/admin/live-dashboard');
+      const res = await fetch(${API_BASE_URL}/api/admin/live-dashboard');
       const result = await res.json();
       if (result.success) {
         setData(result.data);

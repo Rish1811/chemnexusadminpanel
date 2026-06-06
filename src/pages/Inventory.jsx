@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { Package, ShieldCheck, MapPin } from 'lucide-react';
 
@@ -6,7 +7,7 @@ const Inventory = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://mellifluous-dragon-3e1091.netlify.app/api/leads')
+    fetch(${API_BASE_URL}/api/leads')
       .then(res => res.json())
       .then(data => {
         if (data.success) {

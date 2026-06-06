@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, FileText, Check, X, AlertCircle } from 'lucide-react';
 
@@ -19,7 +20,7 @@ const PostManagement = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/requirements');
+      const res = await fetch(${API_BASE_URL}/api/requirements');
       const data = await res.json();
       if (data.success) {
         setPosts(data.data);
@@ -70,7 +71,7 @@ const PostManagement = () => {
     else endpoint = '/api/requirements/manufacturer/post';
 
     try {
-      const res = await fetch(`https://mellifluous-dragon-3e1091.netlify.app${endpoint}`, {
+      const res = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
