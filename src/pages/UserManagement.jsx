@@ -10,7 +10,7 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(${API_BASE_URL});
+      const res = await fetch(`${API_BASE_URL}/api/admin/users`);
       const data = await res.json();
       if (data.success) {
         setUsers(data.data);

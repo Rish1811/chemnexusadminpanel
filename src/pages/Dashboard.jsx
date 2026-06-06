@@ -38,7 +38,7 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const res = await fetch(${API_BASE_URL});
+      const res = await fetch(`${API_BASE_URL}/api/admin/live-dashboard`);
       const result = await res.json();
       if (result.success) {
         setData(result.data);
