@@ -31,7 +31,7 @@ const Directory = () => {
   const [logoFile, setLogoFile] = useState(null);
 
   const fetchDirectory = () => {
-    fetch('http://localhost:3000/api/directory')
+    fetch('https://mellifluous-dragon-3e1091.netlify.app/api/directory')
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -80,7 +80,7 @@ const Directory = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/api/admin/directory', {
+      const res = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/admin/directory', {
         method: 'POST',
         body: submitData
       });

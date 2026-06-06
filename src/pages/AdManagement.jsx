@@ -17,12 +17,12 @@ const AdManagement = () => {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/admin/banners');
+      const res = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/admin/banners');
       const data = await res.json();
       if (data.success) {
         setBanners(data.data);
       }
-    } catch (err) {
+    } catch (err) { 
       console.error(err);
     } finally {
       setIsLoadingBanners(false);
@@ -31,7 +31,7 @@ const AdManagement = () => {
 
   const toggleBannerStatus = async (id, currentStatus) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/admin/banners/${id}/status`, {
+      const res = await fetch(`https://mellifluous-dragon-3e1091.netlify.app/api/admin/banners/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !currentStatus })
@@ -48,7 +48,7 @@ const AdManagement = () => {
   const deleteBanner = async (id) => {
     if (!window.confirm("Are you sure you want to delete this banner?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/admin/banners/${id}`, {
+      const res = await fetch(`https://mellifluous-dragon-3e1091.netlify.app/api/admin/banners/${id}`, {
         method: 'DELETE'
       });
       const data = await res.json();
@@ -88,7 +88,7 @@ const AdManagement = () => {
     formData.append('adTimer', adTimer);
 
     try {
-      const response = await fetch('http://localhost:3000/api/banners/upload', {
+      const response = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/banners/upload', {
         method: 'POST',
         body: formData,
       });

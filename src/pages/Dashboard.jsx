@@ -37,7 +37,7 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/admin/live-dashboard');
+      const res = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/admin/live-dashboard');
       const result = await res.json();
       if (result.success) {
         setData(result.data);

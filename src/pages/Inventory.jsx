@@ -6,7 +6,7 @@ const Inventory = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/leads')
+    fetch('https://mellifluous-dragon-3e1091.netlify.app/api/leads')
       .then(res => res.json())
       .then(data => {
         if (data.success) {

@@ -9,7 +9,7 @@ const PolicyView = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:3000/api/policies/${type}`)
+    fetch(`https://mellifluous-dragon-3e1091.netlify.app/api/policies/${type}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {

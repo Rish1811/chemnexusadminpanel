@@ -19,7 +19,7 @@ const PostManagement = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/requirements');
+      const res = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/requirements');
       const data = await res.json();
       if (data.success) {
         setPosts(data.data);
@@ -70,7 +70,7 @@ const PostManagement = () => {
     else endpoint = '/api/requirements/manufacturer/post';
 
     try {
-      const res = await fetch(`http://localhost:3000${endpoint}`, {
+      const res = await fetch(`https://mellifluous-dragon-3e1091.netlify.app${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

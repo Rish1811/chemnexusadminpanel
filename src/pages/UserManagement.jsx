@@ -9,7 +9,7 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/admin/users');
+      const res = await fetch('https://mellifluous-dragon-3e1091.netlify.app/api/admin/users');
       const data = await res.json();
       if (data.success) {
         setUsers(data.data);
@@ -27,7 +27,7 @@ const UserManagement = () => {
 
   const handleApprove = async (applicationId) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/admin/users/${applicationId}/approve`, {
+      const res = await fetch(`https://mellifluous-dragon-3e1091.netlify.app/api/admin/users/${applicationId}/approve`, {
         method: 'POST'
       });
       const data = await res.json();
@@ -46,7 +46,7 @@ const UserManagement = () => {
   const handleReject = async (applicationId) => {
     if (!window.confirm("Are you sure you want to reject this application?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/admin/users/${applicationId}/reject`, {
+      const res = await fetch(`https://mellifluous-dragon-3e1091.netlify.app/api/admin/users/${applicationId}/reject`, {
         method: 'POST'
       });
       const data = await res.json();
