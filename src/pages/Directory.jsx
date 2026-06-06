@@ -32,7 +32,7 @@ const Directory = () => {
   const [logoFile, setLogoFile] = useState(null);
 
   const fetchDirectory = () => {
-    fetch(${API_BASE_URL}/api/directory')
+    fetch(${API_BASE_URL})
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -81,7 +81,7 @@ const Directory = () => {
     }
 
     try {
-      const res = await fetch(${API_BASE_URL}/api/admin/directory', {
+      const res = await fetch(${API_BASE_URL}, {
         method: 'POST',
         body: submitData
       });

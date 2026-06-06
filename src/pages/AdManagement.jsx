@@ -18,7 +18,7 @@ const AdManagement = () => {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch(${API_BASE_URL}/api/admin/banners');
+      const res = await fetch(`${API_BASE_URL}/api/admin/banners`);
       const data = await res.json();
       if (data.success) {
         setBanners(data.data);
@@ -89,7 +89,7 @@ const AdManagement = () => {
     formData.append('adTimer', adTimer);
 
     try {
-      const response = await fetch(${API_BASE_URL}/api/banners/upload', {
+      const response = await fetch(`${API_BASE_URL}/api/banners/upload`, {
         method: 'POST',
         body: formData,
       });

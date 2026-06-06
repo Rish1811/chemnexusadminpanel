@@ -7,7 +7,7 @@ const Inventory = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(${API_BASE_URL}/api/leads')
+    fetch(${API_BASE_URL})
       .then(res => res.json())
       .then(data => {
         if (data.success) {

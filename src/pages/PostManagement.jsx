@@ -20,7 +20,7 @@ const PostManagement = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch(${API_BASE_URL}/api/requirements');
+      const res = await fetch(${API_BASE_URL});
       const data = await res.json();
       if (data.success) {
         setPosts(data.data);
