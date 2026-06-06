@@ -17,8 +17,8 @@ const Layout = ({ onLogout }) => {
     <div className="app-container">
       {/* Sidebar */}
       <aside className="sidebar">
-        <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img src={logo} alt="ChemNexus Logo" style={{ height: '32px', width: 'auto' }} />
+        <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 0', gap: '12px' }}>
+          <img src={logo} alt="ChemNexus Logo" style={{ height: '64px', width: 'auto' }} />
         </div>
         
         <nav className="sidebar-nav">
@@ -78,7 +78,6 @@ const Layout = ({ onLogout }) => {
         {/* Persistent Header */}
         <header className="top-header">
           <div className="header-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <img src={logo} alt="ChemNexus Logo" style={{ height: '24px', width: 'auto' }} />
             <div className="header-brand">CHEMNEXUS</div>
             <div className="header-divider"></div>
             <div className="header-subtitle">ADMIN DASHBOARD</div>
@@ -89,8 +88,8 @@ const Layout = ({ onLogout }) => {
             <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '8px', backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--danger)', color: 'var(--danger)', cursor: 'pointer', fontWeight: '500' }}>
               <LogOut size={16} /> Logout
             </button>
-            <div className="user-avatar">
-              <img src="https://i.pravatar.cc/150?img=11" alt="User" />
+            <div className="user-avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--surface)', color: 'var(--accent-blue)', border: '1px solid var(--border)' }}>
+              <User size={20} />
             </div>
           </div>
         </header>
