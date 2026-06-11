@@ -32,7 +32,7 @@ const Layout = ({ onLogout }) => {
           </NavLink>
           <NavLink to="/inventory" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Package size={20} />
-            Inventory
+            Interested
           </NavLink>
           <NavLink to="/profile" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <User size={20} />
@@ -55,6 +55,11 @@ const Layout = ({ onLogout }) => {
             Post Mgmt
           </NavLink>
           
+          <NavLink to="/settings" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+            <Settings size={20} />
+            Settings
+          </NavLink>
+          
           <div style={{ padding: '16px 20px 8px', fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '1px' }}>
             Policies & Support
           </div>
@@ -69,6 +74,10 @@ const Layout = ({ onLogout }) => {
           <NavLink to="/support/advertisement" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Megaphone size={20} />
             Ad Policy
+          </NavLink>
+          <NavLink to="/faqs" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+            <HelpCircle size={20} />
+            Help & FAQs
           </NavLink>
         </div>
       </aside>

@@ -10,6 +10,9 @@ import AdManagement from './pages/AdManagement';
 import UserManagement from './pages/UserManagement';
 import PostManagement from './pages/PostManagement';
 import Login from './pages/Login';
+import WebsiteLanding from './pages/WebsiteLanding';
+import PlatformSettings from './pages/PlatformSettings';
+import FAQManagement from './pages/FAQManagement';
 import './index.css';
 
 function App() {
@@ -20,6 +23,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/website" element={<WebsiteLanding />} />
         <Route 
           path="/login" 
           element={isAuthenticated ? <Navigate to="/" /> : <Login onLogin={setIsAuthenticated} />} 
@@ -35,7 +39,9 @@ function App() {
           <Route path="ad-management" element={<AdManagement />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="posts" element={<PostManagement />} />
+          <Route path="faqs" element={<FAQManagement />} />
           <Route path="support/:type" element={<PolicyView />} />
+          <Route path="settings" element={<PlatformSettings />} />
         </Route>
       </Routes>
     </BrowserRouter>

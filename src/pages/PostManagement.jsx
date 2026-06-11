@@ -1,6 +1,6 @@
 import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, FileText, Check, X, AlertCircle } from 'lucide-react';
+import { Plus, Search, FileText, Check, X, AlertCircle, Eye, Trash2, Power } from 'lucide-react';
 
 const PostManagement = () => {
   const [posts, setPosts] = useState([]);
@@ -20,7 +20,7 @@ const PostManagement = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/requirements`);
+      const res = await fetch(`${API_BASE_URL}/api/admin/requirements`);
       const data = await res.json();
       if (data.success) {
         setPosts(data.data);
@@ -35,6 +35,39 @@ const PostManagement = () => {
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+
+  const handleToggleStatus = async (id, currentStatus) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/requirements/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: !currentStatus })
+      });
+      if (res.ok) fetchPosts();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/requirements/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) fetchPosts();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleView = (post) => {
+    setSelectedPost(post);
+    setShowViewModal(true);
+  };
 
   const handleCategoryChange = (e) => {
     const newCategory = e.target.value;
@@ -282,12 +315,13 @@ const PostManagement = () => {
               <th style={{ padding: '16px 24px', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>TYPE</th>
               <th style={{ padding: '16px 24px', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>LOCATION</th>
               <th style={{ padding: '16px 24px', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>DATE</th>
+              <th style={{ padding: '16px 24px', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem', textAlign: 'right' }}>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             {posts.length === 0 ? (
               <tr>
-                <td colSpan="5" style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)' }}>No posts found.</td>
+                <td colSpan="6" style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)' }}>No posts found.</td>
               </tr>
             ) : (
               posts.map((post) => {
@@ -318,6 +352,31 @@ const PostManagement = () => {
                     <td style={{ padding: '16px 24px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>{location}</td>
                     <td style={{ padding: '16px 24px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                       {new Date(post.postedAt).toLocaleDateString()}
+                    </td>
+                    <td style={{ padding: '16px 24px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                        <button 
+                          onClick={() => handleView(post)}
+                          style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--accent-blue)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer' }}
+                          title="View"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button 
+                          onClick={() => handleToggleStatus(post._id, post.isActive !== false)}
+                          style={{ background: post.isActive !== false ? 'rgba(16, 185, 129, 0.1)' : 'rgba(107, 114, 128, 0.1)', color: post.isActive !== false ? 'var(--success)' : 'var(--text-muted)', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer' }}
+                          title={post.isActive !== false ? "Active (Click to disable)" : "Inactive (Click to enable)"}
+                        >
+                          <Power size={16} />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(post._id)}
+                          style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer' }}
+                          title="Delete"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -379,6 +438,60 @@ const PostManagement = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* View Modal */}
+      {showViewModal && selectedPost && (
+        <div style={{ 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+          display: 'flex', justifyContent: 'center', alignItems: 'center' 
+        }}>
+          <div style={{ 
+            backgroundColor: 'var(--bg-card)', 
+            width: '500px', 
+            borderRadius: '12px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+            overflow: 'hidden'
+          }}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 style={{ margin: 0, fontSize: '18px', color: 'var(--text-main)' }}>Post Details</h2>
+              <button onClick={() => setShowViewModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div style={{ padding: '24px', maxHeight: '60vh', overflowY: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <tbody>
+                  {Object.entries(selectedPost).map(([key, value]) => {
+                    if (key === '_id' || key === '__v') return null;
+                    let displayValue = value;
+                    if (typeof value === 'boolean') displayValue = value ? 'Yes' : 'No';
+                    if (Array.isArray(value)) displayValue = value.join(', ');
+                    if (typeof value === 'object' && value !== null) displayValue = JSON.stringify(value);
+                    if (key === 'postedAt') displayValue = new Date(value).toLocaleString();
+
+                    return (
+                      <tr key={key} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                        <td style={{ padding: '12px 0', color: 'var(--text-muted)', width: '40%', fontWeight: 500, textTransform: 'capitalize' }}>
+                          {key.replace(/([A-Z])/g, ' $1').trim()}
+                        </td>
+                        <td style={{ padding: '12px 0', color: 'var(--text-main)' }}>
+                          {displayValue || '-'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end' }}>
+              <button onClick={() => setShowViewModal(false)} style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'transparent', color: 'var(--text-main)', cursor: 'pointer' }}>
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

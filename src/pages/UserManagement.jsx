@@ -1,12 +1,16 @@
 import { API_BASE_URL } from '../config';
 import React, { useState, useEffect } from 'react';
-import { Users, CheckCircle, Clock, Search, FileText, MoreVertical, X, Eye } from 'lucide-react';
+import { Users, CheckCircle, Clock, Search, FileText, MoreVertical, X, Eye, PlusCircle } from 'lucide-react';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [rejectingAppId, setRejectingAppId] = useState(null);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   const fetchUsers = async () => {
     try {
@@ -44,14 +48,33 @@ const UserManagement = () => {
     }
   };
 
-  const handleReject = async (applicationId) => {
-    if (!window.confirm("Are you sure you want to reject this application?")) return;
+  const openRejectModal = (applicationId) => {
+    setRejectingAppId(applicationId);
+    setRejectionReason("");
+    setRejectModalOpen(true);
+  };
+
+  const confirmReject = async () => {
+    if (!rejectionReason.trim()) {
+      alert("Please provide a reason for rejection.");
+      return;
+    }
+    
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/users/${applicationId}/reject`, {
-        method: 'POST'
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${rejectingAppId}/reject`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ reason: rejectionReason })
       });
       const data = await res.json();
       if (data.success) {
+        setRejectModalOpen(false);
+        setRejectingAppId(null);
+        if (selectedUser && selectedUser.applicationId === rejectingAppId) {
+           setSelectedUser(null);
+        }
         fetchUsers();
       } else {
         alert(data.message);
@@ -59,6 +82,44 @@ const UserManagement = () => {
     } catch (err) {
       console.error("Failed to reject user:", err);
       alert("Error rejecting user");
+    }
+  };
+
+  const handleAddToDirectory = async (user) => {
+    try {
+      const formData = new FormData();
+      formData.append('companyName', user.companyInfo?.companyName || 'Unknown');
+      formData.append('contactPerson', user.companyInfo?.contactName || '');
+      formData.append('email', user.companyInfo?.email || '');
+      formData.append('mobile', user.companyInfo?.mobile || '');
+      formData.append('location', user.companyInfo?.location || '');
+      formData.append('website', user.companyInfo?.website || '');
+      formData.append('category', user.role || 'Unknown');
+      
+      const products = user.businessDetails?.products || [];
+      if (Array.isArray(products) && products.length > 0) {
+        formData.append('products', JSON.stringify(products));
+      } else if (typeof products === 'string' && products.trim() !== '') {
+        formData.append('products', JSON.stringify([products]));
+      }
+
+      formData.append('isVerified', user.status === 'APPROVED' ? 'true' : 'false');
+      
+      const res = await fetch(`${API_BASE_URL}/api/admin/directory`, {
+         method: 'POST',
+         body: formData
+      });
+      
+      const data = await res.json();
+      if (data.success) {
+         alert("Successfully added to directory!");
+         setDropdownOpen(null);
+      } else {
+         alert("Failed: " + data.message);
+      }
+    } catch (err) {
+      console.error("Failed to add to directory:", err);
+      alert("Error adding to directory");
     }
   };
 
@@ -152,30 +213,32 @@ const UserManagement = () => {
                       </span>
                     )}
                   </td>
-                  <td style={{ padding: '16px 24px', textAlign: 'right', position: 'relative' }}>
-                    {user.status === 'UNDER_REVIEW' && (
-                      <>
-                        <button 
-                          onClick={() => handleReject(user.applicationId)}
-                          style={{ padding: '8px 16px', fontSize: '0.9rem', marginRight: '8px', backgroundColor: 'transparent', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', cursor: 'pointer' }}
-                        >
-                          Reject
-                        </button>
-                        <button 
-                          onClick={() => handleApprove(user.applicationId)}
-                          className="btn-primary" 
-                          style={{ padding: '8px 16px', fontSize: '0.9rem', marginRight: '12px' }}
-                        >
-                          Approve
-                        </button>
-                      </>
-                    )}
-                    <button 
-                      onClick={() => setDropdownOpen(dropdownOpen === user.applicationId ? null : user.applicationId)}
-                      style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px' }}
-                    >
-                      <MoreVertical size={20} />
-                    </button>
+                  <td style={{ padding: '16px 24px', position: 'relative' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '8px' }}>
+                      {user.status === 'UNDER_REVIEW' && (
+                        <>
+                          <button 
+                            onClick={() => openRejectModal(user.applicationId)}
+                            style={{ padding: '8px 16px', fontSize: '0.9rem', backgroundColor: 'transparent', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          >
+                            Reject
+                          </button>
+                          <button 
+                            onClick={() => handleApprove(user.applicationId)}
+                            className="btn-primary" 
+                            style={{ padding: '8px 16px', fontSize: '0.9rem', border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          >
+                            Approve
+                          </button>
+                        </>
+                      )}
+                      <button 
+                        onClick={() => setDropdownOpen(dropdownOpen === user.applicationId ? null : user.applicationId)}
+                        style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      >
+                        <MoreVertical size={20} />
+                      </button>
+                    </div>
                     
                     {dropdownOpen === user.applicationId && (
                       <div style={{ position: 'absolute', right: '40px', top: '50px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '8px', zIndex: 10, boxShadow: '0 10px 25px rgba(0,0,0,0.5)', overflow: 'hidden', minWidth: '150px' }}>
@@ -186,6 +249,14 @@ const UserManagement = () => {
                           onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                         >
                           <Eye size={16} color="var(--accent-blue)" /> View Profile
+                        </button>
+                        <button 
+                          onClick={() => handleAddToDirectory(user)}
+                          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'transparent', border: 'none', color: 'var(--text-main)', cursor: 'pointer', width: '100%', textAlign: 'left', fontSize: '0.9rem' }}
+                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
+                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
+                          <PlusCircle size={16} color="var(--success)" /> Add to Directory
                         </button>
                       </div>
                     )}
@@ -277,7 +348,7 @@ const UserManagement = () => {
                   </div>
                   <div style={{ display: 'flex', gap: '12px' }}>
                     <button 
-                      onClick={() => { handleReject(selectedUser.applicationId); setSelectedUser(null); }}
+                      onClick={() => openRejectModal(selectedUser.applicationId)}
                       style={{ padding: '12px 32px', fontSize: '1rem', fontWeight: 'bold', backgroundColor: 'transparent', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', cursor: 'pointer' }}
                     >
                       Reject User
@@ -294,6 +365,50 @@ const UserManagement = () => {
               )}
 
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rejection Modal */}
+      {rejectModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: '20px' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '16px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+            
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <X size={20} color="#ef4444" /> Reject Application
+              </h3>
+              <button onClick={() => setRejectModalOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ padding: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 'bold' }}>Reason for Rejection</label>
+              <textarea 
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Enter the reason to notify the user..."
+                style={{ width: '100%', padding: '12px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-main)', outline: 'none', minHeight: '100px', resize: 'vertical' }}
+                autoFocus
+              />
+            </div>
+
+            <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <button 
+                onClick={() => setRejectModalOpen(false)}
+                style={{ padding: '10px 16px', backgroundColor: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmReject}
+                style={{ padding: '10px 16px', backgroundColor: '#ef4444', border: 'none', color: 'white', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+              >
+                Confirm Reject
+              </button>
+            </div>
+
           </div>
         </div>
       )}

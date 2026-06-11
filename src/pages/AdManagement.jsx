@@ -7,10 +7,12 @@ const AdManagement = () => {
   const [preview, setPreview] = useState(null);
   const [linkUrl, setLinkUrl] = useState('');
   const [adTimer, setAdTimer] = useState(5);
+  const [bannerType, setBannerType] = useState('MAIN');
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isUploading, setIsUploading] = useState(false);
   const [banners, setBanners] = useState([]);
   const [isLoadingBanners, setIsLoadingBanners] = useState(true);
+  const [activeTab, setActiveTab] = useState('MAIN');
 
   useEffect(() => {
     fetchBanners();
@@ -87,6 +89,7 @@ const AdManagement = () => {
     formData.append('bannerImage', file);
     formData.append('linkUrl', linkUrl);
     formData.append('adTimer', adTimer);
+    formData.append('bannerType', bannerType);
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/banners/upload`, {
@@ -146,10 +149,38 @@ const AdManagement = () => {
                 <UploadCloud size={48} color="var(--text-muted)" />
                 <div style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: 'bold' }}>Drag & Drop or Click to Upload</div>
                 <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-                  Image must be exactly <strong style={{ color: 'var(--accent-yellow)'}}>500x100 pixels</strong>. (JPG, PNG)
+                  {bannerType === 'HOME' ? 
+                    <><strong style={{ color: 'var(--accent-yellow)'}}>500x100 pixels</strong> (Slider Banner)</> : 
+                    <><strong style={{ color: 'var(--accent-yellow)'}}>Standard Size</strong> (Popup Ad)</>
+                  }
+                  . (JPG, PNG)
                 </div>
               </div>
             )}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 'bold' }}>Banner Type</label>
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)', cursor: 'pointer' }}>
+                <input 
+                  type="radio" 
+                  name="bannerType" 
+                  value="MAIN" 
+                  checked={bannerType === 'MAIN'} 
+                  onChange={(e) => setBannerType(e.target.value)} 
+                /> Main Banner
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)', cursor: 'pointer' }}>
+                <input 
+                  type="radio" 
+                  name="bannerType" 
+                  value="HOME" 
+                  checked={bannerType === 'HOME'} 
+                  onChange={(e) => setBannerType(e.target.value)} 
+                /> Home Banner
+              </label>
+            </div>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -159,7 +190,7 @@ const AdManagement = () => {
               placeholder="https://example.com/promo" 
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
-              style={{ padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-dark)', color: 'white', outline: 'none' }}
+              style={{ padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'transparent', color: 'var(--text-main)', outline: 'none' }}
             />
           </div>
 
@@ -171,7 +202,7 @@ const AdManagement = () => {
               max="60"
               value={adTimer}
               onChange={(e) => setAdTimer(e.target.value)}
-              style={{ padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-dark)', color: 'white', outline: 'none' }}
+              style={{ padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'transparent', color: 'black', outline: 'none' }}
             />
           </div>
 
@@ -207,17 +238,34 @@ const AdManagement = () => {
 
       {/* Banner List Section */}
       <div className="panel" style={{ padding: '40px' }}>
-        <h3 style={{ fontSize: '1.4rem', color: 'var(--text-main)', marginBottom: '24px' }}>Manage Existing Banners</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+          <h3 style={{ fontSize: '1.4rem', color: 'var(--text-main)', margin: 0 }}>Manage Existing Banners</h3>
+          
+          <div style={{ display: 'flex', gap: '8px', backgroundColor: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '8px' }}>
+            <button 
+              onClick={() => setActiveTab('MAIN')}
+              style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', backgroundColor: activeTab === 'MAIN' ? 'var(--accent-blue)' : 'transparent', color: activeTab === 'MAIN' ? 'white' : 'var(--text-muted)', cursor: 'pointer', fontWeight: 'bold' }}
+            >
+              Main Banners
+            </button>
+            <button 
+              onClick={() => setActiveTab('HOME')}
+              style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', backgroundColor: activeTab === 'HOME' ? 'var(--accent-blue)' : 'transparent', color: activeTab === 'HOME' ? 'white' : 'var(--text-muted)', cursor: 'pointer', fontWeight: 'bold' }}
+            >
+              Home Banners
+            </button>
+          </div>
+        </div>
         
         {isLoadingBanners ? (
           <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Loading banners...</div>
-        ) : banners.length === 0 ? (
+        ) : banners.filter(b => (b.bannerType || 'MAIN') === activeTab).length === 0 ? (
           <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '32px', border: '1px solid var(--border-color)', borderRadius: '12px' }}>
-            No banners uploaded yet.
+            No {activeTab.toLowerCase()} banners uploaded yet.
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {banners.map((banner) => (
+            {banners.filter(b => (b.bannerType || 'MAIN') === activeTab).map((banner) => (
               <div key={banner._id} style={{ display: 'flex', alignItems: 'center', gap: '24px', padding: '16px', border: '1px solid var(--border-color)', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.02)' }}>
                 <img src={banner.imageUrl} alt="Banner" style={{ width: '200px', height: 'auto', borderRadius: '8px', border: '1px solid var(--border-light)', opacity: banner.isActive ? 1 : 0.4 }} />
                 <div style={{ flex: 1 }}>
