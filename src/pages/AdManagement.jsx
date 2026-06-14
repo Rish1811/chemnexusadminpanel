@@ -8,6 +8,8 @@ const AdManagement = () => {
   const [linkUrl, setLinkUrl] = useState('');
   const [adTimer, setAdTimer] = useState(5);
   const [bannerType, setBannerType] = useState('MAIN');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isUploading, setIsUploading] = useState(false);
   const [banners, setBanners] = useState([]);
@@ -90,6 +92,8 @@ const AdManagement = () => {
     formData.append('linkUrl', linkUrl);
     formData.append('adTimer', adTimer);
     formData.append('bannerType', bannerType);
+    if (startDate) formData.append('startDate', startDate);
+    if (endDate) formData.append('endDate', endDate);
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/banners/upload`, {
@@ -104,6 +108,8 @@ const AdManagement = () => {
         setPreview(null);
         setLinkUrl('');
         setAdTimer(5);
+        setStartDate('');
+        setEndDate('');
         fetchBanners(); // Refresh the list
       } else {
         setStatus({ type: 'error', message: data.message || 'Upload failed.' });
@@ -206,6 +212,27 @@ const AdManagement = () => {
             />
           </div>
 
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+              <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 'bold' }}>Start Date (Optional)</label>
+              <input 
+                type="date" 
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                style={{ padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'transparent', color: 'black', outline: 'none' }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+              <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 'bold' }}>End Date (Optional)</label>
+              <input 
+                type="date" 
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={{ padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'transparent', color: 'black', outline: 'none' }}
+              />
+            </div>
+          </div>
+
           {status.message && (
             <div style={{ 
               padding: '16px', 
@@ -270,7 +297,11 @@ const AdManagement = () => {
                 <img src={banner.imageUrl} alt="Banner" style={{ width: '200px', height: 'auto', borderRadius: '8px', border: '1px solid var(--border-light)', opacity: banner.isActive ? 1 : 0.4 }} />
                 <div style={{ flex: 1 }}>
                   <div style={{ color: 'var(--text-main)', fontWeight: 'bold' }}>{banner.linkUrl !== '#' ? banner.linkUrl : 'No Link Provided'}</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>Timer: {banner.adTimer ?? 5}s | Uploaded: {new Date(banner.createdAt).toLocaleDateString()}</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
+                    Timer: {banner.adTimer ?? 5}s | Uploaded: {new Date(banner.createdAt).toLocaleDateString()}
+                    {banner.startDate && ` | Start: ${new Date(banner.startDate).toLocaleDateString()}`}
+                    {banner.endDate && ` | End: ${new Date(banner.endDate).toLocaleDateString()}`}
+                  </div>
                   <div style={{ marginTop: '8px', display: 'inline-block', padding: '4px 10px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', backgroundColor: banner.isActive ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)', color: banner.isActive ? 'var(--success)' : 'var(--danger)' }}>
                     {banner.isActive ? 'ACTIVE' : 'INACTIVE'}
                   </div>

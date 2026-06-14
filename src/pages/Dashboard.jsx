@@ -97,7 +97,8 @@ const Dashboard = () => {
         <div className="main-content">
           
           {/* 4x2 Stats Grid */}
-          <div className="stats-grid-light">
+          {/* 3x3 Stats Grid */}
+          <div className="stats-grid-light" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
             <div className="stat-card-light">
               <div className="icon-wrapper" style={{background: '#DBEAFE', color: '#3B82F6'}}>
                 <Users size={18} />
@@ -105,7 +106,26 @@ const Dashboard = () => {
               <div className="stat-title">Total Users</div>
               <div className="stat-value">
                 {formatNumber(stats.totalUsers)}
-                <span className="stat-trend positive">(+1.2%)</span>
+              </div>
+            </div>
+
+            <div className="stat-card-light">
+              <div className="icon-wrapper" style={{background: '#E0E7FF', color: '#6366F1'}}>
+                <FileText size={18} />
+              </div>
+              <div className="stat-title">Total Directory</div>
+              <div className="stat-value">
+                {formatNumber(stats.totalDirectory)}
+              </div>
+            </div>
+
+            <div className="stat-card-light">
+              <div className="icon-wrapper" style={{background: '#D1FAE5', color: '#10B981'}}>
+                <MessageSquare size={18} />
+              </div>
+              <div className="stat-title">Total Posts</div>
+              <div className="stat-value">
+                {formatNumber(stats.totalPosts)}
               </div>
             </div>
 
@@ -115,52 +135,7 @@ const Dashboard = () => {
               </div>
               <div className="stat-title">Pending Approvals</div>
               <div className="stat-value">
-                {stats.pendingApprovals}
-                <span className="stat-trend positive">(+0.5%)</span>
-              </div>
-            </div>
-
-            <div className="stat-card-light">
-              <div className="icon-wrapper" style={{background: '#D1FAE5', color: '#10B981'}}>
-                <CreditCard size={18} />
-              </div>
-              <div className="stat-title">Active Subscriptions</div>
-              <div className="stat-value">
-                {formatNumber(stats.activeSubscriptions)}
-                <span className="stat-trend positive">(+2.1%)</span>
-              </div>
-            </div>
-
-            <div className="stat-card-light">
-              <div className="icon-wrapper" style={{background: '#FEE2E2', color: '#EF4444'}}>
-                <XCircle size={18} />
-              </div>
-              <div className="stat-title">Expired Subscriptions</div>
-              <div className="stat-value">
-                {formatNumber(stats.expiredSubscriptions)}
-                <span className="stat-trend positive">(+0.3%)</span>
-              </div>
-            </div>
-
-            <div className="stat-card-light">
-              <div className="icon-wrapper" style={{background: '#E0E7FF', color: '#6366F1'}}>
-                <MessageSquare size={18} />
-              </div>
-              <div className="stat-title">Total Posts (#P IDs)</div>
-              <div className="stat-value">
-                {formatNumber(stats.totalPosts)}
-                <span className="stat-trend positive">(+1.5%)</span>
-              </div>
-            </div>
-
-            <div className="stat-card-light">
-              <div className="icon-wrapper" style={{background: '#E0E7FF', color: '#6366F1'}}>
-                <Heart size={18} />
-              </div>
-              <div className="stat-title">Total Interests</div>
-              <div className="stat-value">
-                {formatNumber(stats.totalInterests)}
-                <span className="stat-trend positive">(+2.2%)</span>
+                {formatNumber(stats.pendingApprovals)}
               </div>
             </div>
 
@@ -168,21 +143,49 @@ const Dashboard = () => {
               <div className="icon-wrapper" style={{background: '#FCE7F3', color: '#EC4899'}}>
                 <LockOpen size={18} />
               </div>
-              <div className="stat-title">Contact Unlocks</div>
+              <div className="stat-title">Contact Unlocked</div>
               <div className="stat-value">
                 {formatNumber(stats.contactUnlocks)}
-                <span className="stat-trend positive">(+1.8%)</span>
+              </div>
+            </div>
+
+            <div className="stat-card-light">
+              <div className="icon-wrapper" style={{background: '#DBEAFE', color: '#3B82F6'}}>
+                <User size={18} />
+              </div>
+              <div className="stat-title">Free Users (Trial)</div>
+              <div className="stat-value">
+                {formatNumber(stats.freeUsers)}
               </div>
             </div>
 
             <div className="stat-card-light">
               <div className="icon-wrapper" style={{background: '#D1FAE5', color: '#10B981'}}>
-                <DollarSign size={18} />
+                <CreditCard size={18} />
               </div>
-              <div className="stat-title">Revenue</div>
+              <div className="stat-title">Paid Users</div>
               <div className="stat-value">
-                {formatCurrency(stats.revenue)}
-                <span className="stat-trend positive">(+3.0%)</span>
+                {formatNumber(stats.paidUsers)}
+              </div>
+            </div>
+
+            <div className="stat-card-light">
+              <div className="icon-wrapper" style={{background: '#FEE2E2', color: '#EF4444'}}>
+                <XCircle size={18} />
+              </div>
+              <div className="stat-title">Expired Free Users</div>
+              <div className="stat-value">
+                {formatNumber(stats.expiredFreeUsers)}
+              </div>
+            </div>
+
+            <div className="stat-card-light">
+              <div className="icon-wrapper" style={{background: '#FEE2E2', color: '#EF4444'}}>
+                <AlertCircle size={18} />
+              </div>
+              <div className="stat-title">Expired Paid Users</div>
+              <div className="stat-value">
+                {formatNumber(stats.expiredPaidUsers)}
               </div>
             </div>
           </div>

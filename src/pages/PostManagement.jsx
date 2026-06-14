@@ -7,6 +7,8 @@ const PostManagement = () => {
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [filter, setFilter] = useState('All Posts');
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Form state
   const [category, setCategory] = useState('Chemical Manufacturer');
@@ -15,7 +17,11 @@ const PostManagement = () => {
     productName: '',
     casNumber: '',
     quantity: '',
-    location: ''
+    location: '',
+    packing: '',
+    price: '',
+    frequency: 'One Time',
+    message: ''
   });
 
   const fetchPosts = async () => {
@@ -75,15 +81,15 @@ const PostManagement = () => {
     
     // Reset form data based on category
     if (newCategory === 'Logistics') {
-      setFormData({ fromLocation: '', toLocation: '', serviceType: '', materialType: '', quantity: '' });
+      setFormData({ serviceType: 'Transport', vehicleType: 'Truck', vehicleCapacity: '', fromLocation: '', toLocation: '', materialType: 'Haz', message: '' });
     } else if (newCategory === 'Lab Chemicals') {
-      setFormData({ buyOrSell: 'Buy', itemName: '', grade: '', quantity: '', deliveryLocation: '' });
+      setFormData({ buyOrSell: 'Buy', itemName: '', grade: 'LR Grade', quantity: '', brand: '', moq: '', priceRange: 'Below ₹1,000', packSize: '', application: 'Laboratory', message: '' });
     } else if (newCategory === 'OEM / EPC') {
-      setFormData({ requirementType: 'OEM', equipmentName: '', capacity: '', budget: '', location: '' });
+      setFormData({ buyOrSell: 'Buy', categoryDropdown: 'Equipment', location: '', materialOfConstruction: 'Stainless Steel', budget: 'Below ₹5 Lakhs', specifications: '', message: '' });
     } else if (newCategory === 'Packaging Material') {
-      setFormData({ buyOrSell: 'Buy', productName: '', materialType: '', capacity: '', quantityRequired: '', deliveryLocation: '' });
+      setFormData({ buyOrSell: 'Buy', productType: 'Drums', quantityRequired: '', moq: '', priceRange: 'Below ₹100', deliveryLocation: '', message: '' });
     } else {
-      setFormData({ buyOrSell: 'Buy', productName: '', casNumber: '', quantity: '', location: '' });
+      setFormData({ buyOrSell: 'Buy', productName: '', casNumber: '', quantity: '', location: '', packing: '', price: '', frequency: 'One Time', message: '' });
     }
   };
 
@@ -131,26 +137,38 @@ const PostManagement = () => {
         <>
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>From Location</label>
-              <input type="text" name="fromLocation" value={formData.fromLocation} onChange={handleInputChange} required style={inputStyle} />
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Service Type</label>
+              <select name="serviceType" value={formData.serviceType} onChange={handleInputChange} style={inputStyle}>
+                {["Transport", "CHA", "Freight Forwarding", "Shipping", "Warehousing", "Other"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
             </div>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>To Location</label>
-              <input type="text" name="toLocation" value={formData.toLocation} onChange={handleInputChange} required style={inputStyle} />
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Vehicle Type</label>
+              <select name="vehicleType" value={formData.vehicleType} onChange={handleInputChange} style={inputStyle}>
+                {["Truck", "Pick Up", "Tanker", "Other"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
             </div>
-          </div>
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Service Type</label>
-            <input type="text" name="serviceType" value={formData.serviceType} onChange={handleInputChange} placeholder="e.g. Tanker, ISO Container" required style={inputStyle} />
           </div>
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Material Type</label>
-              <input type="text" name="materialType" value={formData.materialType} onChange={handleInputChange} placeholder="e.g. Hazardous Liquid" required style={inputStyle} />
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Location (From)</label>
+              <input type="text" name="fromLocation" value={formData.fromLocation} onChange={handleInputChange} required style={inputStyle} />
             </div>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Quantity</label>
-              <input type="text" name="quantity" value={formData.quantity} onChange={handleInputChange} required style={inputStyle} />
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Location (To)</label>
+              <input type="text" name="toLocation" value={formData.toLocation} onChange={handleInputChange} required style={inputStyle} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Vehicle Capacity</label>
+              <input type="text" name="vehicleCapacity" value={formData.vehicleCapacity} onChange={handleInputChange} placeholder="Kgs, Liters or MT" required style={inputStyle} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Material Type</label>
+              <select name="materialType" value={formData.materialType} onChange={handleInputChange} style={inputStyle}>
+                {["Haz", "Non Haz"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
             </div>
           </div>
         </>
@@ -158,85 +176,119 @@ const PostManagement = () => {
     } else if (category === 'Lab Chemicals') {
       return (
         <>
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Buy or Sell?</label>
-            <select name="buyOrSell" value={formData.buyOrSell} onChange={handleInputChange} style={inputStyle}>
-              <option value="Buy">Buy</option>
-              <option value="Sell">Sell</option>
-            </select>
-          </div>
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Item Name</label>
-            <input type="text" name="itemName" value={formData.itemName} onChange={handleInputChange} required style={inputStyle} />
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Buy or Sell?</label>
+              <select name="buyOrSell" value={formData.buyOrSell} onChange={handleInputChange} style={inputStyle}>
+                <option value="Buy">Buy</option>
+                <option value="Sell">Sell</option>
+              </select>
+            </div>
+            <div style={{ flex: 2 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Product Name</label>
+              <input type="text" name="itemName" value={formData.itemName} onChange={handleInputChange} required style={inputStyle} />
+            </div>
           </div>
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Grade</label>
-              <input type="text" name="grade" value={formData.grade} onChange={handleInputChange} placeholder="e.g. AR, LR" required style={inputStyle} />
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Grade / Purity</label>
+              <select name="grade" value={formData.grade} onChange={handleInputChange} style={inputStyle}>
+                {["LR Grade", "AR Grade", "HPLC Grade", "Other"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
             </div>
             <div style={{ flex: 1 }}>
               <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Quantity</label>
               <input type="text" name="quantity" value={formData.quantity} onChange={handleInputChange} required style={inputStyle} />
             </div>
           </div>
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Make/Brand</label>
+              <input type="text" name="brand" value={formData.brand} onChange={handleInputChange} required style={inputStyle} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>MOQ</label>
+              <input type="text" name="moq" value={formData.moq} onChange={handleInputChange} required style={inputStyle} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Price Range</label>
+              <select name="priceRange" value={formData.priceRange} onChange={handleInputChange} style={inputStyle}>
+                {["Below ₹1,000", "₹1,000 - ₹5,000", "₹5,000 - ₹10,000", "Above ₹10,000"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Pack Size</label>
+              <input type="text" name="packSize" value={formData.packSize} onChange={handleInputChange} placeholder="e.g. 500g, 1L" required style={inputStyle} />
+            </div>
+          </div>
           <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Location</label>
-            <input type="text" name="deliveryLocation" value={formData.deliveryLocation} onChange={handleInputChange} required style={inputStyle} />
+            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Application / Use</label>
+            <select name="application" value={formData.application} onChange={handleInputChange} style={inputStyle}>
+              {["Laboratory", "Research", "Educational", "Industrial", "Other"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
           </div>
         </>
       );
     } else if (category === 'OEM / EPC') {
       return (
         <>
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Requirement Type</label>
-            <select name="requirementType" value={formData.requirementType} onChange={handleInputChange} style={inputStyle}>
-              <option value="OEM">OEM</option>
-              <option value="EPC">EPC</option>
-            </select>
-          </div>
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Equipment/Project Name</label>
-            <input type="text" name="equipmentName" value={formData.equipmentName} onChange={handleInputChange} required style={inputStyle} />
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Buy or Sell?</label>
+              <select name="buyOrSell" value={formData.buyOrSell} onChange={handleInputChange} style={inputStyle}>
+                <option value="Buy">Buy</option>
+                <option value="Sell">Sell</option>
+              </select>
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Category</label>
+              <select name="categoryDropdown" value={formData.categoryDropdown} onChange={handleInputChange} style={inputStyle}>
+                {["Equipment", "EPC", "Engineering Services", "Fabrication", "Maintenance", "Spares & Utilities", "Other"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
           </div>
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Capacity/Specs</label>
-              <input type="text" name="capacity" value={formData.capacity} onChange={handleInputChange} required style={inputStyle} />
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Location</label>
+              <input type="text" name="location" value={formData.location} onChange={handleInputChange} required style={inputStyle} />
             </div>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Budget</label>
-              <input type="text" name="budget" value={formData.budget} onChange={handleInputChange} style={inputStyle} />
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>MOC</label>
+              <select name="materialOfConstruction" value={formData.materialOfConstruction} onChange={handleInputChange} style={inputStyle}>
+                {["Stainless Steel", "Mild Steel", "Glass Lined", "Hastelloy", "Other"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
             </div>
           </div>
           <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Location</label>
-            <input type="text" name="location" value={formData.location} onChange={handleInputChange} required style={inputStyle} />
+            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Budget</label>
+            <select name="budget" value={formData.budget} onChange={handleInputChange} style={inputStyle}>
+              {["Below ₹5 Lakhs", "₹5 - ₹15 Lakhs", "₹15 - ₹50 Lakhs", "Above ₹50 Lakhs"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Specifications</label>
+            <textarea name="specifications" value={formData.specifications} onChange={handleInputChange} rows="2" required style={{ ...inputStyle, resize: 'vertical' }}></textarea>
           </div>
         </>
       );
     } else if (category === 'Packaging Material') {
       return (
         <>
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Buy or Sell?</label>
-            <select name="buyOrSell" value={formData.buyOrSell} onChange={handleInputChange} style={inputStyle}>
-              <option value="Buy">Buy</option>
-              <option value="Sell">Sell</option>
-            </select>
-          </div>
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Product Name</label>
-            <input type="text" name="productName" value={formData.productName} onChange={handleInputChange} placeholder="e.g. IBC Tote, Drums" required style={inputStyle} />
-          </div>
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Material Type</label>
-              <input type="text" name="materialType" value={formData.materialType} onChange={handleInputChange} placeholder="e.g. HDPE, Steel" required style={inputStyle} />
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Buy or Sell?</label>
+              <select name="buyOrSell" value={formData.buyOrSell} onChange={handleInputChange} style={inputStyle}>
+                <option value="Buy">Buy</option>
+                <option value="Sell">Sell</option>
+              </select>
             </div>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Capacity</label>
-              <input type="text" name="capacity" value={formData.capacity} onChange={handleInputChange} placeholder="e.g. 1000L" required style={inputStyle} />
+            <div style={{ flex: 2 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Product Type</label>
+              <select name="productType" value={formData.productType} onChange={handleInputChange} style={inputStyle}>
+                {["Drums", "Jerry Can", "IBC", "PP Caps", "Liners", "Carboys", "Bags", "Pallets", "Other"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
@@ -245,7 +297,19 @@ const PostManagement = () => {
               <input type="text" name="quantityRequired" value={formData.quantityRequired} onChange={handleInputChange} required style={inputStyle} />
             </div>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Location</label>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>MOQ</label>
+              <input type="text" name="moq" value={formData.moq} onChange={handleInputChange} required style={inputStyle} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Price Range</label>
+              <select name="priceRange" value={formData.priceRange} onChange={handleInputChange} style={inputStyle}>
+                {["Below ₹100", "₹100 - ₹500", "₹500 - ₹1,000", "Above ₹1,000"].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Delivery Location</label>
               <input type="text" name="deliveryLocation" value={formData.deliveryLocation} onChange={handleInputChange} required style={inputStyle} />
             </div>
           </div>
@@ -276,9 +340,28 @@ const PostManagement = () => {
               <input type="text" name="quantity" value={formData.quantity} onChange={handleInputChange} required style={inputStyle} />
             </div>
           </div>
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Location</label>
-            <input type="text" name="location" value={formData.location} onChange={handleInputChange} required style={inputStyle} />
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Location</label>
+              <input type="text" name="location" value={formData.location} onChange={handleInputChange} required style={inputStyle} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Packing Details</label>
+              <input type="text" name="packing" value={formData.packing} onChange={handleInputChange} required style={inputStyle} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Price</label>
+              <input type="text" name="price" value={formData.price} onChange={handleInputChange} required style={inputStyle} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>Frequency</label>
+              <select name="frequency" value={formData.frequency} onChange={handleInputChange} style={inputStyle}>
+                <option value="One Time">One Time</option>
+                <option value="Regular">Regular</option>
+              </select>
+            </div>
           </div>
         </>
       );
@@ -289,6 +372,23 @@ const PostManagement = () => {
     return <div style={{ color: 'var(--text-main)', padding: '40px' }}>Loading Posts...</div>;
   }
 
+  const filteredPosts = posts.filter(post => {
+    const query = searchQuery.toLowerCase();
+    const title = post.productName || post.itemName || post.categoryDropdown || post.productType || post.serviceType || 'Unknown';
+    const matchSearch = 
+      (post._id && post._id.toLowerCase().includes(query)) ||
+      (title.toLowerCase().includes(query));
+
+    if (!matchSearch) return false;
+
+    if (filter === 'All Posts') return true;
+    if (filter === 'Active Posts') return post.isActive !== false;
+    if (filter === 'Inactive Posts') return post.isActive === false;
+    if (filter === 'Buy Requirements') return post.buyOrSell === 'Buy';
+    if (filter === 'Sell Requirements') return post.buyOrSell === 'Sell';
+    return true;
+  });
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -296,13 +396,38 @@ const PostManagement = () => {
           <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: '0 0 8px 0', color: 'var(--text-main)' }}>Post Management</h1>
           <p style={{ color: 'var(--text-muted)', margin: 0 }}>View all user requirements and post as admin.</p>
         </div>
-        <button 
-          onClick={() => setShowCreateModal(true)}
-          className="btn-primary" 
-          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-        >
-          <Plus size={18} /> Create New Post
-        </button>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <select 
+            value={filter} 
+            onChange={(e) => setFilter(e.target.value)}
+            style={{ padding: '10px 16px', borderRadius: '8px', backgroundColor: 'var(--bg-dark)', color: 'var(--text-main)', border: '1px solid var(--border-color)', outline: 'none' }}
+          >
+            <option value="All Posts">All Posts</option>
+            <option value="Active Posts">Active Posts</option>
+            <option value="Inactive Posts">Inactive Posts</option>
+            <option value="Buy Requirements">Buy Requirements</option>
+            <option value="Sell Requirements">Sell Requirements</option>
+          </select>
+          
+          <div className="search-bar" style={{ width: '250px' }}>
+            <Search size={20} color="var(--text-muted)" />
+            <input 
+              type="text" 
+              placeholder="Search posts..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ backgroundColor: 'transparent', border: 'none', color: 'white', width: '100%', outline: 'none' }} 
+            />
+          </div>
+
+          <button 
+            onClick={() => setShowCreateModal(true)}
+            className="btn-primary" 
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            <Plus size={18} /> Create New Post
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -319,14 +444,14 @@ const PostManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {posts.length === 0 ? (
+            {filteredPosts.length === 0 ? (
               <tr>
                 <td colSpan="6" style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)' }}>No posts found.</td>
               </tr>
             ) : (
-              posts.map((post) => {
-                const title = post.productName || post.itemName || post.equipmentName || post.serviceType || 'Unknown';
-                const qty = post.quantity || post.capacity || post.quantityRequired || '';
+              filteredPosts.map((post) => {
+                const title = post.productName || post.itemName || post.categoryDropdown || post.productType || post.serviceType || 'Unknown';
+                const qty = post.quantity || post.quantityRequired || post.vehicleCapacity || '';
                 const location = post.location || post.deliveryLocation || post.fromLocation || '-';
                 const type = post.buyOrSell || (post.category === 'Logistics' ? 'Transport' : 'OEM/EPC');
                 
@@ -427,6 +552,11 @@ const PostManagement = () => {
               <div style={{ padding: '16px', backgroundColor: 'var(--bg-dark)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                 <h3 style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '16px', letterSpacing: '0.5px' }}>Dynamic Fields</h3>
                 {renderFormFields()}
+              </div>
+
+              <div style={{ marginTop: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-main)', marginBottom: '8px' }}>Additional Information</label>
+                <textarea name="message" value={formData.message} onChange={handleInputChange} rows="3" placeholder="Enter additional info (max 1000 chars)" style={{ ...inputStyle, resize: 'vertical' }}></textarea>
               </div>
 
               <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>

@@ -7,10 +7,18 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [filter, setFilter] = useState('All Users');
+  const [searchQuery, setSearchQuery] = useState('');
   
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [rejectingAppId, setRejectingAppId] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
+
+  const [subModalOpen, setSubModalOpen] = useState(false);
+  const [subAppId, setSubAppId] = useState(null);
+  const [subPlanType, setSubPlanType] = useState('FREE_TRIAL');
+  const [subStartDate, setSubStartDate] = useState('');
+  const [subEndDate, setSubEndDate] = useState('');
 
   const fetchUsers = async () => {
     try {
@@ -92,6 +100,7 @@ const UserManagement = () => {
       formData.append('contactPerson', user.companyInfo?.contactName || '');
       formData.append('email', user.companyInfo?.email || '');
       formData.append('mobile', user.companyInfo?.mobile || '');
+      formData.append('gstNumber', user.companyInfo?.gstNumber || '');
       formData.append('location', user.companyInfo?.location || '');
       formData.append('website', user.companyInfo?.website || '');
       formData.append('category', user.role || 'Unknown');
@@ -123,9 +132,66 @@ const UserManagement = () => {
     }
   };
 
+  const handleSubscriptionSubmit = async (e) => {
+    e.preventDefault();
+    if (!subStartDate || !subEndDate) return alert("Please select both dates");
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${subAppId}/subscription`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planType: subPlanType, startDate: subStartDate, endDate: subEndDate })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Subscription activated successfully");
+        setSubModalOpen(false);
+        fetchUsers();
+      } else {
+        alert("Failed: " + data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error saving subscription");
+    }
+  };
+
   if (loading) {
     return <div style={{ color: 'white', padding: '40px' }}>Loading...</div>;
   }
+
+  const filteredUsers = users.filter(user => {
+    // text search
+    const query = searchQuery.toLowerCase();
+    const matchSearch = 
+      (user.applicationId && user.applicationId.toLowerCase().includes(query)) ||
+      (user.companyInfo?.companyName && user.companyInfo.companyName.toLowerCase().includes(query)) ||
+      (user.companyInfo?.email && user.companyInfo.email.toLowerCase().includes(query));
+
+    if (!matchSearch) return false;
+
+    // dropdown filter
+    if (filter === 'All Users') return true;
+    if (filter === 'Approved') return user.status === 'APPROVED';
+    if (filter === 'Pending') return user.status === 'UNDER_REVIEW';
+    
+    // Subscription checks
+    const sub = user.subscription || {};
+    const type = (sub.planType || 'NONE').toUpperCase();
+    const isActive = sub.isActive === true || sub.isActive === 'true';
+
+    if (filter === 'Active Free Trial') {
+      return isActive && (type.includes('FREE') || type.includes('TRIAL'));
+    }
+    if (filter === 'Active Paid Subscription') {
+      return isActive && (type.includes('PAID') || type.includes('PREMIUM'));
+    }
+    if (filter === 'Expired Subscriptions') {
+      return !isActive && type !== 'NONE';
+    }
+
+    return true;
+  });
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -142,10 +208,31 @@ const UserManagement = () => {
           </div>
         </div>
         
-        {/* Search */}
-        <div className="search-bar" style={{ width: '300px' }}>
-          <Search size={20} color="var(--text-muted)" />
-          <input type="text" placeholder="Search applications..." style={{ backgroundColor: 'transparent', border: 'none', color: 'white', width: '100%', outline: 'none' }} />
+        {/* Controls */}
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <select 
+            value={filter} 
+            onChange={(e) => setFilter(e.target.value)}
+            style={{ padding: '10px 16px', borderRadius: '8px', backgroundColor: 'var(--bg-dark)', color: 'var(--text-main)', border: '1px solid var(--border-color)', outline: 'none' }}
+          >
+            <option value="All Users">All Users</option>
+            <option value="Approved">Approved</option>
+            <option value="Pending">Pending</option>
+            <option value="Active Free Trial">Active Free Trial</option>
+            <option value="Active Paid Subscription">Active Paid Subscription</option>
+            <option value="Expired Subscriptions">Expired Subscriptions</option>
+          </select>
+          
+          <div className="search-bar" style={{ width: '300px' }}>
+            <Search size={20} color="var(--text-muted)" />
+            <input 
+              type="text" 
+              placeholder="Search applications..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ backgroundColor: 'transparent', border: 'none', color: 'white', width: '100%', outline: 'none' }} 
+            />
+          </div>
         </div>
       </div>
 
@@ -159,21 +246,27 @@ const UserManagement = () => {
               <th style={{ padding: '16px 24px', color: 'var(--text-muted)', fontWeight: 'bold' }}>Role</th>
               <th style={{ padding: '16px 24px', color: 'var(--text-muted)', fontWeight: 'bold' }}>Documents</th>
               <th style={{ padding: '16px 24px', color: 'var(--text-muted)', fontWeight: 'bold' }}>Status</th>
+              <th style={{ padding: '16px 24px', color: 'var(--text-muted)', fontWeight: 'bold' }}>Plan</th>
               <th style={{ padding: '16px 24px', color: 'var(--text-muted)', fontWeight: 'bold', textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.length === 0 ? (
+            {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                <td colSpan="7" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                   No registrations found yet.
                 </td>
               </tr>
             ) : (
-              users.map(user => (
+              filteredUsers.map(user => (
                 <tr key={user.applicationId} style={{ borderBottom: '1px solid var(--border-color)' }}>
                   <td style={{ padding: '16px 24px', color: 'var(--text-main)', fontFamily: 'monospace' }}>
                     {user.applicationId}
+                    {user.submittedOn && (
+                      <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px', fontFamily: 'sans-serif' }}>
+                        {new Date(user.submittedOn).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
+                      </div>
+                    )}
                   </td>
                   <td style={{ padding: '16px 24px' }}>
                     <div style={{ color: 'var(--text-main)', fontWeight: 'bold' }}>{user.companyInfo?.companyName || "N/A"}</div>
@@ -213,7 +306,17 @@ const UserManagement = () => {
                       </span>
                     )}
                   </td>
-                  <td style={{ padding: '16px 24px', position: 'relative' }}>
+                  <td style={{ padding: '16px 24px' }}>
+                    {user.subscription && user.subscription.isActive ? (
+                      <span style={{ backgroundColor: user.subscription.planType === 'PAID' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(234, 179, 8, 0.1)', color: user.subscription.planType === 'PAID' ? 'var(--success)' : 'var(--accent-yellow)', border: `1px solid ${user.subscription.planType === 'PAID' ? 'var(--success)' : 'var(--accent-yellow)'}`, padding: '6px 12px', borderRadius: '20px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px', width: 'fit-content', whiteSpace: 'nowrap' }}>
+                        {user.subscription.planType === 'PAID' ? <CheckCircle size={14} /> : <Clock size={14} />} 
+                        {user.subscription.planType === 'PAID' ? 'Paid Sub' : 'Free Trial'}
+                      </span>
+                    ) : (
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>None</span>
+                    )}
+                  </td>
+                  <td style={{ padding: '16px 24px', textAlign: 'right', position: 'relative' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '8px' }}>
                       {user.status === 'UNDER_REVIEW' && (
                         <>
@@ -258,6 +361,32 @@ const UserManagement = () => {
                         >
                           <PlusCircle size={16} color="var(--success)" /> Add to Directory
                         </button>
+                        <button 
+                          onClick={() => {
+                             setSubAppId(user.applicationId);
+                             setSubPlanType('FREE_TRIAL');
+                             setDropdownOpen(null);
+                             setSubModalOpen(true);
+                          }}
+                          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'transparent', border: 'none', color: 'var(--text-main)', cursor: 'pointer', width: '100%', textAlign: 'left', fontSize: '0.9rem' }}
+                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
+                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
+                          <Clock size={16} color="var(--accent-yellow)" /> Free Trial
+                        </button>
+                        <button 
+                          onClick={() => {
+                             setSubAppId(user.applicationId);
+                             setSubPlanType('PAID');
+                             setDropdownOpen(null);
+                             setSubModalOpen(true);
+                          }}
+                          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'transparent', border: 'none', color: 'var(--text-main)', cursor: 'pointer', width: '100%', textAlign: 'left', fontSize: '0.9rem' }}
+                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
+                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
+                          <CheckCircle size={16} color="var(--success)" /> Paid Subscription
+                        </button>
                       </div>
                     )}
                   </td>
@@ -297,6 +426,7 @@ const UserManagement = () => {
                 <div style={{ backgroundColor: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
                   <h4 style={{ color: 'black', margin: '0 0 16px 0', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>Company Information</h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#555' }}>Registered On:</span> <span style={{ color: 'black', fontWeight: '500', textAlign: 'right' }}>{selectedUser.submittedOn ? new Date(selectedUser.submittedOn).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : "N/A"}</span></div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#555' }}>Email:</span> <span style={{ color: 'black', fontWeight: '500' }}>{selectedUser.companyInfo?.email || "N/A"}</span></div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#555' }}>Mobile:</span> <span style={{ color: 'black', fontWeight: '500' }}>{selectedUser.companyInfo?.mobile || "N/A"}</span></div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#555' }}>GST No:</span> <span style={{ color: 'black', fontWeight: '500' }}>{selectedUser.companyInfo?.gstNumber || "N/A"}</span></div>
@@ -409,6 +539,49 @@ const UserManagement = () => {
               </button>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* Subscription Modal */}
+      {subModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: '20px' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '16px', width: '100%', maxWidth: '400px', padding: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, color: 'var(--text-main)' }}>{subPlanType === 'FREE_TRIAL' ? 'Activate Free Trial' : 'Activate Paid Subscription'}</h3>
+              <button onClick={() => setSubModalOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubscriptionSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Start Date</label>
+                <input 
+                  type="date" 
+                  value={subStartDate} 
+                  onChange={(e) => setSubStartDate(e.target.value)} 
+                  required
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-color)', color: 'black' }}
+                />
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>End Date</label>
+                <input 
+                  type="date" 
+                  value={subEndDate} 
+                  onChange={(e) => setSubEndDate(e.target.value)} 
+                  required
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-color)', color: 'black' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px' }}>
+                <button type="button" onClick={() => setSubModalOpen(false)} style={{ padding: '10px 24px', borderRadius: '8px', backgroundColor: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)', cursor: 'pointer' }}>Cancel</button>
+                <button type="submit" className="btn-primary" style={{ padding: '10px 24px' }}>Activate</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
