@@ -93,6 +93,26 @@ const UserManagement = () => {
     }
   };
 
+  const handleDeleteUser = async (applicationId) => {
+    if (window.confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/admin/users/${applicationId}`, {
+          method: 'DELETE'
+        });
+        const data = await res.json();
+        if (data.success) {
+          fetchUsers();
+          setDropdownOpen(null);
+        } else {
+          alert("Failed to delete user: " + data.message);
+        }
+      } catch (err) {
+        console.error("Failed to delete user:", err);
+        alert("Error deleting user");
+      }
+    }
+  };
+
   const handleAddToDirectory = async (user) => {
     try {
       const formData = new FormData();
@@ -237,7 +257,7 @@ const UserManagement = () => {
       </div>
 
       {/* Table */}
-      <div className="panel" style={{ padding: '0', overflow: 'hidden' }}>
+      <div className="panel" style={{ padding: '0', overflow: 'visible' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'rgba(255,255,255,0.02)' }}>
@@ -386,6 +406,14 @@ const UserManagement = () => {
                           onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                         >
                           <CheckCircle size={16} color="var(--success)" /> Paid Subscription
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteUser(user.applicationId)}
+                          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', width: '100%', textAlign: 'left', fontSize: '0.9rem' }}
+                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(239,68,68,0.1)'}
+                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
+                          <X size={16} color="#ef4444" /> Delete User
                         </button>
                       </div>
                     )}
