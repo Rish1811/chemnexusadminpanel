@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import WebsiteLanding from './pages/WebsiteLanding';
 import PlatformSettings from './pages/PlatformSettings';
 import FAQManagement from './pages/FAQManagement';
+import WebsiteBannerManagement from './pages/WebsiteBannerManagement';
 import './index.css';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           <Route path="inventory" element={<Inventory />} />
           <Route path="profile" element={<Profile />} />
           <Route path="ad-management" element={<AdManagement />} />
+          <Route path="website-banners" element={<WebsiteBannerManagement />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="posts" element={<PostManagement />} />
           <Route path="faqs" element={<FAQManagement />} />

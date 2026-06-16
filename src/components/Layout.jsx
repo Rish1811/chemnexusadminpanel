@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { 
   Home, BookOpen, Package, User, HelpCircle, 
-  Settings, Bell, Users, FileText, Shield, Megaphone, Target, LogOut
+  Settings, Bell, Users, FileText, Shield, Megaphone, Target, LogOut, Image as ImageIcon
 } from 'lucide-react';
 import '../index.css';
 import logo from '../assets/logo.png';
@@ -38,13 +38,16 @@ const Layout = ({ onLogout }) => {
             <User size={20} />
             Profile
           </NavLink>
-        </nav>
-        
-        <div className="sidebar-footer">
+
+          <div style={{ margin: '16px 0', borderTop: '1px solid #272c39' }}></div>
 
           <NavLink to="/ad-management" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Target size={20} />
             Banners & Ads
+          </NavLink>
+          <NavLink to="/website-banners" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+            <ImageIcon size={20} />
+            Website Banners
           </NavLink>
           <NavLink to="/users" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Users size={20} />
@@ -60,7 +63,7 @@ const Layout = ({ onLogout }) => {
             Settings
           </NavLink>
           
-          <div style={{ padding: '16px 20px 8px', fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '1px' }}>
+          <div style={{ padding: '16px 4px 8px', fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '1px' }}>
             Policies & Support
           </div>
           <NavLink to="/support/terms" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
@@ -79,7 +82,7 @@ const Layout = ({ onLogout }) => {
             <HelpCircle size={20} />
             Help & FAQs
           </NavLink>
-        </div>
+        </nav>
       </aside>
 
       {/* Main Content Wrapper */}

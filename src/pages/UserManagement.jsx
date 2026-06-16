@@ -9,6 +9,7 @@ const UserManagement = () => {
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [filter, setFilter] = useState('All Users');
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('General');
   
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [rejectingAppId, setRejectingAppId] = useState(null);
@@ -189,28 +190,44 @@ const UserManagement = () => {
 
     if (!matchSearch) return false;
 
-    // dropdown filter
-    if (filter === 'All Users') return true;
-    if (filter === 'Approved') return user.status === 'APPROVED';
-    if (filter === 'Pending') return user.status === 'UNDER_REVIEW';
-    
     // Subscription checks
     const sub = user.subscription || {};
     const type = (sub.planType || 'NONE').toUpperCase();
     const isActive = sub.isActive === true || sub.isActive === 'true';
+    const isFreeTrial = isActive && (type.includes('FREE') || type.includes('TRIAL'));
+    const isPaid = isActive && (type.includes('PAID') || type.includes('PREMIUM'));
 
-    if (filter === 'Active Free Trial') {
-      return isActive && (type.includes('FREE') || type.includes('TRIAL'));
+    // Tab checks
+    if (activeTab === 'General') {
+      if (isFreeTrial || isPaid) return false;
+    } else if (activeTab === 'FreeTrial') {
+      if (!isFreeTrial) return false;
+    } else if (activeTab === 'PaidPlan') {
+      if (!isPaid) return false;
     }
-    if (filter === 'Active Paid Subscription') {
-      return isActive && (type.includes('PAID') || type.includes('PREMIUM'));
-    }
-    if (filter === 'Expired Subscriptions') {
-      return !isActive && type !== 'NONE';
-    }
+
+    // dropdown filter
+    if (filter === 'All Users') return true;
+    if (filter === 'Approved') return user.status === 'APPROVED';
+    if (filter === 'Pending') return user.status === 'UNDER_REVIEW';
+    if (filter === 'Expired Subscriptions') return !isActive && type !== 'NONE';
 
     return true;
   });
+
+  const counts = users.reduce((acc, user) => {
+    const sub = user.subscription || {};
+    const isActive = sub.isActive === true || sub.isActive === 'true';
+    const type = (sub.planType || 'NONE').toUpperCase();
+    const isFreeTrial = isActive && (type.includes('FREE') || type.includes('TRIAL'));
+    const isPaid = isActive && (type.includes('PAID') || type.includes('PREMIUM'));
+
+    if (isFreeTrial) acc.freeTrial++;
+    else if (isPaid) acc.paidPlan++;
+    else acc.general++;
+
+    return acc;
+  }, { general: 0, freeTrial: 0, paidPlan: 0 });
 
 
   return (
@@ -238,8 +255,6 @@ const UserManagement = () => {
             <option value="All Users">All Users</option>
             <option value="Approved">Approved</option>
             <option value="Pending">Pending</option>
-            <option value="Active Free Trial">Active Free Trial</option>
-            <option value="Active Paid Subscription">Active Paid Subscription</option>
             <option value="Expired Subscriptions">Expired Subscriptions</option>
           </select>
           
@@ -254,6 +269,28 @@ const UserManagement = () => {
             />
           </div>
         </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '16px', borderBottom: '1px solid var(--border-color)', marginBottom: '-8px' }}>
+        <button 
+          onClick={() => setActiveTab('General')}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'transparent', border: 'none', borderBottom: activeTab === 'General' ? '2px solid var(--accent-blue)' : '2px solid transparent', color: activeTab === 'General' ? 'var(--text-main)' : 'var(--text-muted)', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s ease' }}
+        >
+          General Users <span style={{ padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem', backgroundColor: activeTab === 'General' ? 'var(--accent-blue)' : 'rgba(255,255,255,0.1)', color: activeTab === 'General' ? 'white' : 'var(--text-muted)' }}>{counts.general}</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('FreeTrial')}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'transparent', border: 'none', borderBottom: activeTab === 'FreeTrial' ? '2px solid var(--accent-blue)' : '2px solid transparent', color: activeTab === 'FreeTrial' ? 'var(--text-main)' : 'var(--text-muted)', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s ease' }}
+        >
+          Free Trial Users <span style={{ padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem', backgroundColor: activeTab === 'FreeTrial' ? 'var(--accent-blue)' : 'rgba(255,255,255,0.1)', color: activeTab === 'FreeTrial' ? 'white' : 'var(--text-muted)' }}>{counts.freeTrial}</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('PaidPlan')}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'transparent', border: 'none', borderBottom: activeTab === 'PaidPlan' ? '2px solid var(--accent-blue)' : '2px solid transparent', color: activeTab === 'PaidPlan' ? 'var(--text-main)' : 'var(--text-muted)', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s ease' }}
+        >
+          Paid Plan Users <span style={{ padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem', backgroundColor: activeTab === 'PaidPlan' ? 'var(--accent-blue)' : 'rgba(255,255,255,0.1)', color: activeTab === 'PaidPlan' ? 'white' : 'var(--text-muted)' }}>{counts.paidPlan}</span>
+        </button>
       </div>
 
       {/* Table */}
@@ -293,7 +330,10 @@ const UserManagement = () => {
                     <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{user.companyInfo?.email || ""}</div>
                   </td>
                   <td style={{ padding: '16px 24px', color: 'var(--text-muted)' }}>
-                    {user.role}
+                    {user.role === 'LAB' ? 'Lab Chemicals & Supplies' : 
+                     user.role === 'PACKING' ? 'Chemical Packing Material Provider' : 
+                     user.role === 'LOGISTICS' ? 'Logistics Service Provider' : 
+                     user.role}
                   </td>
                   <td style={{ padding: '16px 24px' }}>
                     <div style={{ display: 'flex', gap: '8px' }}>

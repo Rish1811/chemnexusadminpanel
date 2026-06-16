@@ -1,14 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 import { Link } from 'react-router-dom';
 import { Shield, Zap, Globe, Smartphone, CheckCircle, ChevronRight, Lock, Activity, FileText } from 'lucide-react';
 import './WebsiteLanding.css';
 import logo from '../assets/chemnexus-logo.png';
 
 const WebsiteLanding = () => {
-  // Simple scroll to top on mount
+  const [banners, setBanners] = useState([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Fetch banners and simple scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchBanners();
   }, []);
+
+  useEffect(() => {
+    if (banners.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % banners.length);
+    }, 5000); // 5 seconds default
+    return () => clearInterval(interval);
+  }, [banners]);
+
+  const fetchBanners = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/banners?type=WEBSITE`);
+      const data = await res.json();
+      if (data.success) {
+        setBanners(data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch banners", error);
+    }
+  };
 
   return (
     <div className="landing-page">
@@ -30,29 +55,54 @@ const WebsiteLanding = () => {
 
       {/* Hero Section */}
       <section id="home" className="landing-section hero-section">
-        <div className="hero-slider">
-          <div className="slide"></div>
-          <div className="slide"></div>
-          <div className="slide"></div>
-        </div>
-        <div className="hero-overlay"></div>
         <div className="hero-glow"></div>
-        <div className="hero-content">
-          <span className="global-beta-tag">Global Beta Access</span>
-          <h1 className="hero-title">
-            Invite-Only <span className="text-orange">Global</span> <br />
-            <span className="text-orange">Chemical</span> Network
-          </h1>
-          <p className="hero-subtitle">
-            A private ecosystem for verified chemical businesses to connect, collaborate and trade directly.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-start', marginTop: '2rem' }}>
-            <button className="join-btn" style={{ padding: '14px 32px', fontSize: '1.1rem' }}>
-              Request Access <ChevronRight size={18} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '4px' }} />
-            </button>
-            <button className="outline-btn" style={{ padding: '14px 32px', fontSize: '1.1rem' }}>
-              Learn More
-            </button>
+        <div className="hero-split-container">
+          <div className="hero-left-content">
+            <span className="global-beta-tag">Global Beta Access</span>
+            <h1 className="hero-title">
+              Invite-Only <span className="text-orange">Global</span> <br />
+              <span className="text-orange">Chemical</span> Network
+            </h1>
+            <p className="hero-subtitle">
+              A private ecosystem for verified chemical businesses to connect, collaborate and trade directly.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-start', marginTop: '2rem' }}>
+              <button className="join-btn" style={{ padding: '14px 32px', fontSize: '1.1rem' }}>
+                Request Access <ChevronRight size={18} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '4px' }} />
+              </button>
+              <button className="outline-btn" style={{ padding: '14px 32px', fontSize: '1.1rem' }}>
+                Learn More
+              </button>
+            </div>
+          </div>
+          
+          <div className="hero-right-slider">
+            {banners.length > 0 ? (
+              <div className="banner-carousel">
+                {banners.map((banner, index) => (
+                  <div 
+                    key={banner._id} 
+                    className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
+                    style={{ backgroundImage: `url(${banner.imageUrl})` }}
+                  ></div>
+                ))}
+                {banners.length > 1 && (
+                  <div className="carousel-dots">
+                    {banners.map((_, index) => (
+                      <span 
+                        key={index} 
+                        className={`dot ${index === currentSlide ? 'active' : ''}`}
+                        onClick={() => setCurrentSlide(index)}
+                      ></span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="banner-carousel placeholder-carousel">
+                <div className="carousel-slide active" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')" }}></div>
+              </div>
+            )}
           </div>
         </div>
       </section>
