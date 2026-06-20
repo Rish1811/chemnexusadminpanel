@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../config';
 import { Link } from 'react-router-dom';
-import { Shield, Zap, Globe, Smartphone, CheckCircle, ChevronRight, Lock, Activity, FileText } from 'lucide-react';
+import { Shield, Zap, Globe, Smartphone, CheckCircle, ChevronRight, Lock, Activity, Users, Target, Rocket, Eye } from 'lucide-react';
 import './WebsiteLanding.css';
 import logo from '../assets/chemnexus-logo.png';
+import slider1 from '../assets/slider1.png';
+import slider2 from '../assets/slider2.png';
+import slider3 from '../assets/slider3.png';
 
 const WebsiteLanding = () => {
   const [banners, setBanners] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Fetch banners and simple scroll to top on mount
+  // Use local chemical industry images for the hero slider
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchBanners();
+    setBanners([
+      { _id: '1', imageUrl: slider1 },
+      { _id: '2', imageUrl: slider2 },
+      { _id: '3', imageUrl: slider3 }
+    ]);
   }, []);
 
   useEffect(() => {
@@ -22,18 +29,6 @@ const WebsiteLanding = () => {
     }, 5000); // 5 seconds default
     return () => clearInterval(interval);
   }, [banners]);
-
-  const fetchBanners = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/banners?type=WEBSITE`);
-      const data = await res.json();
-      if (data.success) {
-        setBanners(data.data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch banners", error);
-    }
-  };
 
   return (
     <div className="landing-page">
@@ -46,157 +41,195 @@ const WebsiteLanding = () => {
         <div className="landing-nav-links">
           <a href="#home">Home</a>
           <a href="#about">About Us</a>
+          <a href="#network">Network</a>
           <a href="#contact">Contact</a>
         </div>
-        <Link to="/login" className="join-btn">
-          Download App
-        </Link>
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="landing-section hero-section">
-        <div className="hero-glow"></div>
-        <div className="hero-split-container">
-          <div className="hero-left-content">
-            <span className="global-beta-tag">Global Beta Access</span>
-            <h1 className="hero-title">
-              Invite-Only <span className="text-orange">Global</span> <br />
-              <span className="text-orange">Chemical</span> Network
-            </h1>
-            <p className="hero-subtitle">
-              A private ecosystem for verified chemical businesses to connect, collaborate and trade directly.
-            </p>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-start', marginTop: '2rem' }}>
-              <button className="join-btn" style={{ padding: '14px 32px', fontSize: '1.1rem' }}>
-                Request Access <ChevronRight size={18} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '4px' }} />
-              </button>
-              <button className="outline-btn" style={{ padding: '14px 32px', fontSize: '1.1rem' }}>
-                Learn More
-              </button>
+      <section id="home" className="hero-section">
+        <div className="hero-background-slider">
+          <div className="slider-overlay"></div>
+          {banners.length > 0 ? (
+            <div className="banner-carousel">
+              {banners.map((banner, index) => (
+                <div 
+                  key={banner._id} 
+                  className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
+                  style={{ backgroundImage: `url(${banner.imageUrl})` }}
+                ></div>
+              ))}
             </div>
-          </div>
-          
-          <div className="hero-right-slider">
-            {banners.length > 0 ? (
-              <div className="banner-carousel">
-                {banners.map((banner, index) => (
-                  <div 
-                    key={banner._id} 
-                    className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
-                    style={{ backgroundImage: `url(${banner.imageUrl})` }}
-                  ></div>
-                ))}
-                {banners.length > 1 && (
-                  <div className="carousel-dots">
-                    {banners.map((_, index) => (
-                      <span 
-                        key={index} 
-                        className={`dot ${index === currentSlide ? 'active' : ''}`}
-                        onClick={() => setCurrentSlide(index)}
-                      ></span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="banner-carousel placeholder-carousel">
-                <div className="carousel-slide active" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')" }}></div>
-              </div>
-            )}
-          </div>
+          ) : (
+            <div className="banner-carousel placeholder-carousel">
+              <div className="carousel-slide active" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1509395176047-4a66953fd231?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')" }}></div>
+            </div>
+          )}
         </div>
-      </section>
 
-      {/* No Noise Section */}
-      <section id="about" className="landing-section">
-        <div className="split-section" style={{ marginBottom: '4rem' }}>
-          <div>
-            <span className="section-tag">No Noise. Just Business.</span>
-            <h2 className="section-title">High-Trust Environment</h2>
-            <p>
-              ChemNexus filters out the marketplace static. We bring together manufacturers, distributors, 
-              and logistics partners in an elite environment designed exclusively for serious enterprise.
-            </p>
-          </div>
-          <div className="grid-2">
-            <div className="feature-card">
-              <div className="feature-icon gold">
-                <Zap size={24} />
-              </div>
-              <h3>Manufacturers</h3>
-              <p>Direct access to verified advanced producers and trade workflows.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <Shield size={24} />
-              </div>
-              <h3>Distributors</h3>
-              <p>Streamlined procurement with automated trade workflows.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* The Nexus Advantage */}
-      <section className="landing-section">
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <span className="section-tag">The Nexus Advantage</span>
-          <h2 className="section-title">Elite Infrastructure</h2>
-          <p style={{ maxWidth: '600px', margin: '0 auto' }}>
-            Built for the world's most critical supply chain.
+        <div className="hero-content">
+          <span className="global-beta-tag">Built for Serious Trade</span>
+          <h1 className="hero-title">
+            Invite-Only <span className="text-orange">Global</span> <br />
+            Chemical Network
+          </h1>
+          <p className="hero-subtitle">
+            A private ecosystem built for verified chemical businesses to connect, collaborate, and trade directly.<br />
+            <strong>No Noise. Just Business.</strong>
           </p>
+          <div className="hero-cta-group">
+            <button className="join-btn hero-btn">
+              Request Access <ChevronRight size={18} className="icon-inline" />
+            </button>
+          </div>
         </div>
+        
+        {banners.length > 1 && (
+          <div className="carousel-dots hero-dots">
+            {banners.map((_, index) => (
+              <span 
+                key={index} 
+                className={`dot ${index === currentSlide ? 'active' : ''}`}
+                onClick={() => setCurrentSlide(index)}
+              ></span>
+            ))}
+          </div>
+        )}
+      </section>
 
+      {/* About Us Section */}
+      <section id="about" className="landing-section dark-section">
+        <div className="split-section align-items-center">
+          <div className="about-text">
+            <span className="section-tag">🏢 ABOUT US</span>
+            <h2 className="section-title">ChemNexus brings together verified industry participants</h2>
+            <p>
+              ChemNexus is a private, invite-only platform designed to transform how chemical businesses connect and trade globally. 
+              We aim to eliminate inefficiencies, reduce dependency on intermediaries, and enable direct communication between verified industry participants.
+            </p>
+            <p>
+              By combining structured trade formats with a trusted network, ChemNexus creates an environment where serious businesses can engage with confidence.
+              Our focus is simple — quality connections, faster decisions, and better outcomes.
+            </p>
+          </div>
+          <div className="about-image-container">
+            <img src={slider2} alt="Lab and About Section" className="rounded-image" />
+          </div>
+        </div>
+      </section>
+
+      {/* Vision & Mission */}
+      <section className="landing-section">
+        <div className="grid-2">
+          <div className="feature-card text-center">
+            <div className="feature-icon mx-auto gold">
+              <Eye size={28} />
+            </div>
+            <h3>🎯 VISION</h3>
+            <p>To become the world’s most trusted and efficient digital network for the global chemical industry.</p>
+          </div>
+          <div className="feature-card text-center">
+            <div className="feature-icon mx-auto">
+              <Rocket size={28} />
+            </div>
+            <h3>🚀 MISSION</h3>
+            <p>To simplify and streamline chemical trade by enabling direct, transparent, and structured interactions between verified businesses across the supply chain.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Aim & Objectives */}
+      <section className="landing-section dark-section">
+        <div className="text-center mb-4">
+          <span className="section-tag">🎯 AIM & OBJECTIVES</span>
+          <h2 className="section-title">What We Strive For</h2>
+        </div>
         <div className="grid-3">
           <div className="feature-card">
-            <Shield className="feature-icon" size={24} />
-            <h3>Verified Companies Only</h3>
-            <p>Every member undergoes a multi-layer KYC and operational audit before entry.</p>
-          </div>
-          <div className="feature-card">
-            <Activity className="feature-icon gold" size={24} />
-            <h3>Structured Communication</h3>
-            <p>Proprietary tools ensure that materials for trade conversations stay measurable.</p>
+            <Shield className="feature-icon gold" size={24} />
+            <h3>Trusted Ecosystem</h3>
+            <p>Build a trusted ecosystem of verified chemical businesses.</p>
           </div>
           <div className="feature-card">
             <Zap className="feature-icon" size={24} />
-            <h3>Faster Deal Closures</h3>
-            <p>Smart assistants analyze workflow assessments, reducing closing time up to 60%.</p>
+            <h3>Direct Trade</h3>
+            <p>Enable direct trade without unnecessary intermediaries.</p>
           </div>
           <div className="feature-card">
-            <Globe className="feature-icon gold" size={24} />
-            <h3>Global Access</h3>
-            <p>One network spanning 120+ countries, with localized regulatory support built in.</p>
+            <Activity className="feature-icon gold" size={24} />
+            <h3>Speed & Efficiency</h3>
+            <p>Improve speed and efficiency of deal-making.</p>
           </div>
           <div className="feature-card">
             <Lock className="feature-icon" size={24} />
-            <h3>Integrated Ecosystem</h3>
-            <p>From procurement to final delivery, every shipment is staged within a single secure portal.</p>
+            <h3>Structured Comm</h3>
+            <p>Provide structured communication to reduce noise and confusion.</p>
+          </div>
+          <div className="feature-card">
+            <Globe className="feature-icon gold" size={24} />
+            <h3>Integrated Platform</h3>
+            <p>Integrate logistics, supply, and demand in one platform.</p>
+          </div>
+          <div className="feature-card">
+            <Users className="feature-icon" size={24} />
+            <h3>Reputation Driven</h3>
+            <p>Create a reputation-driven business network.</p>
           </div>
         </div>
       </section>
 
-      {/* Mobile App Section */}
-      <section className="landing-section">
+      {/* What We Offer */}
+      <section id="network" className="landing-section">
         <div className="split-section">
           <div>
-            <span className="section-title" style={{ fontSize: '3.5rem', fontWeight: 700, marginBottom: '1rem', display: 'block' }}>Trade on the Move</span>
-            <p style={{ fontSize: '1.1rem' }}>
-              Access the complete Nexus terminal from your smartphone. Real-time price alerts, instant trade approvals, and secure document signing — anywhere at your fingertips.
-            </p>
-            <ul className="check-list">
-              <li><CheckCircle className="check-icon" size={20} /> End-to-end encrypted messaging</li>
-              <li><CheckCircle className="check-icon" size={20} /> Instant push notifications for deal updates</li>
-              <li><CheckCircle className="check-icon" size={20} /> Live commodity price tracking</li>
-              <li><CheckCircle className="check-icon" size={20} /> Secure in-app document signing</li>
+            <span className="section-tag">🌍 WHAT WE OFFER</span>
+            <h2 className="section-title">A Comprehensive Network</h2>
+            <ul className="check-list highlight-list">
+              <li><CheckCircle className="check-icon" size={22} /> Direct access to global buyers and sellers</li>
+              <li><CheckCircle className="check-icon" size={22} /> Verified business profiles</li>
+              <li><CheckCircle className="check-icon" size={22} /> Structured requirement & supply postings</li>
+              <li><CheckCircle className="check-icon" size={22} /> Controlled and meaningful interactions</li>
+              <li><CheckCircle className="check-icon" size={22} /> Integrated logistics connections</li>
+              <li><CheckCircle className="check-icon" size={22} /> Performance and reputation tracking</li>
             </ul>
           </div>
-          <div className="phones-container">
-            <div className="phone-mockup left">
-              <img src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="App Screen 1" />
-            </div>
-            <div className="phone-mockup right">
-              <img src="https://images.unsplash.com/photo-1601972599720-36938d4ecd31?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="App Screen 2" />
+          <div className="about-image-container">
+            <img src={slider3} alt="Global Network" className="rounded-image" />
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Section */}
+      <section className="landing-section dark-section">
+        <div className="split-section reverse-mobile">
+          <div className="about-image-container">
+            <img src={slider1} alt="Trust Infrastructure" className="rounded-image" />
+          </div>
+          <div>
+            <span className="section-tag">🔐 WHY TRUST CHEMNEXUS</span>
+            <h2 className="section-title">Built for Safety and Scale</h2>
+            <p style={{ marginBottom: '2rem' }}>Our platform ensures a secure environment for all participants.</p>
+            <div className="grid-2" style={{ gap: '1.5rem' }}>
+              <div className="small-feature">
+                <div className="icon-circle"><Shield size={20} /></div>
+                <h4>Strict Onboarding</h4>
+                <p>Rigorous verification process.</p>
+              </div>
+              <div className="small-feature">
+                <div className="icon-circle"><Lock size={20} /></div>
+                <h4>Regulated Access</h4>
+                <p>No open or uncontrolled entries.</p>
+              </div>
+              <div className="small-feature">
+                <div className="icon-circle"><Target size={20} /></div>
+                <h4>Serious Business</h4>
+                <p>Focus solely on verified participants.</p>
+              </div>
+              <div className="small-feature">
+                <div className="icon-circle"><Activity size={20} /></div>
+                <h4>Transparent Comm</h4>
+                <p>Structured and clear interactions.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -204,17 +237,20 @@ const WebsiteLanding = () => {
 
       {/* CTA Section */}
       <section id="contact" className="landing-section" style={{ textAlign: 'center', paddingBottom: '6rem' }}>
-        <div className="feature-card" style={{ maxWidth: '800px', margin: '0 auto', background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%)' }}>
-          <h2 className="section-title">Built for Serious Trade.</h2>
-          <p style={{ maxWidth: '600px', margin: '0 auto 2rem auto' }}>
-            ChemNexus isn't just another marketplace. It's a high-trust private terminal for the global chemical economy. No paid banners, no spam — just direct business with verified peers.
+        <div className="feature-card cta-card">
+          <span className="section-tag">📩 JOIN THE NETWORK</span>
+          <h2 className="section-title">Ready to Transform Your Trade?</h2>
+          <p style={{ maxWidth: '600px', margin: '0 auto 2rem auto', fontSize: '1.1rem' }}>
+            ChemNexus is currently invite-only. We onboard a limited number of companies to maintain quality and trust.
           </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="join-btn">Apply Now</button>
-            <button className="outline-btn">Contact Sales</button>
-          </div>
-          <p style={{ marginTop: '1.5rem', fontSize: '0.85rem', color: '#64748b' }}>
-            Applications are reviewed within 48 hours.
+          <form className="invite-form" onSubmit={(e) => { e.preventDefault(); alert('Invite request sent successfully!'); }}>
+            <input type="email" placeholder="Enter your business email" required className="invite-input" />
+            <button type="submit" className="join-btn" style={{ padding: '14px 28px', fontSize: '1.1rem' }}>
+              Request Invite
+            </button>
+          </form>
+          <p style={{ marginTop: '1.5rem', fontSize: '0.9rem', color: '#64748b' }}>
+            Applications are reviewed by our vetting team.
           </p>
         </div>
       </section>
@@ -227,15 +263,16 @@ const WebsiteLanding = () => {
               <img src={logo} alt="ChemNexus" />
               <span>ChemNexus</span>
             </Link>
-            <p>The global standard for chemical trading and industrial commerce.</p>
+            <p>Where Chemical Businesses Connect Directly.</p>
           </div>
-          <div style={{ display: 'flex', gap: '4rem' }}>
+          <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
             <div>
-              <h4 style={{ color: '#f8fafc', marginBottom: '1rem' }}>Platform</h4>
+              <h4 style={{ color: '#f8fafc', marginBottom: '1rem' }}>Who Can Join</h4>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <li><a href="#" style={{ color: '#94a3b8', textDecoration: 'none' }}>Manufacturers</a></li>
-                <li><a href="#" style={{ color: '#94a3b8', textDecoration: 'none' }}>Distributors</a></li>
-                <li><a href="#" style={{ color: '#94a3b8', textDecoration: 'none' }}>Logistics</a></li>
+                <li><span style={{ color: '#94a3b8' }}>Chemical Manufacturers</span></li>
+                <li><span style={{ color: '#94a3b8' }}>Distributors & Traders</span></li>
+                <li><span style={{ color: '#94a3b8' }}>Logistics Providers</span></li>
+                <li><span style={{ color: '#94a3b8' }}>Lab & Eqpt Suppliers</span></li>
               </ul>
             </div>
             <div>
@@ -249,7 +286,7 @@ const WebsiteLanding = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          © 2026 ChemNexus. All rights reserved.
+          © 2026 ChemNexus. All rights reserved. | Invite Only. Global Access. Trusted Trade.
         </div>
       </footer>
     </div>
