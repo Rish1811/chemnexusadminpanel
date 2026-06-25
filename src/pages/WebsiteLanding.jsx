@@ -7,6 +7,7 @@ import logo from '../assets/chemnexus-logo.png';
 import slider1 from '../assets/image1.jpeg';
 import slider2 from '../assets/image2.jpeg';
 import slider3 from '../assets/image3.jpeg';
+import companyLogo from '../assets/company.jpeg';
 
 const WebsiteLanding = () => {
   const [banners, setBanners] = useState([]);
@@ -311,7 +312,15 @@ const WebsiteLanding = () => {
           </div>
         </div> 
         <div className="footer-bottom">
-          © 2026 ChemNexus. All rights reserved. | Invite Only. Global Access. Trusted Trade.
+          <div className="footer-copyright">
+            © 2026 ChemNexus. All rights reserved. | Invite Only. Global Access. Trusted Trade.
+          </div>
+          <div className="footer-developed-by">
+            <span>Developed by</span>
+            <a href="https://www.smservice.co.in/" target="_blank" rel="noopener noreferrer">
+              <img src={companyLogo} alt="SM Service" className="developer-logo" />
+            </a>
+          </div>
         </div>
       </footer>
     </div>
