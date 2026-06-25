@@ -78,7 +78,10 @@ const WebsiteLanding = () => {
             <strong>No Noise. Just Business.</strong>
           </p>
           <div className="hero-cta-group">
-            <button className="join-btn hero-btn">
+            <button 
+              className="join-btn hero-btn"
+              onClick={() => window.open('https://mail.google.com/mail/?view=cm&fs=1&to=chemnexusio@gmail.com', '_blank')}
+            >
               Request Access <ChevronRight size={18} className="icon-inline" />
             </button>
           </div>
@@ -159,10 +162,10 @@ const WebsiteLanding = () => {
             <Activity className="feature-icon gold" size={24} />
             <h3>Speed & Efficiency</h3>
             <p>Improve speed and efficiency of deal-making.</p>
-          </div>
+          </div> 
           <div className="feature-card">
             <Lock className="feature-icon" size={24} />
-            <h3>Structured Comm</h3>
+            <h3>Structured Cmmunication</h3>
             <p>Provide structured communication to reduce noise and confusion.</p>
           </div>
           <div className="feature-card">
@@ -209,7 +212,7 @@ const WebsiteLanding = () => {
             <span className="section-tag">🔐 WHY TRUST CHEMNEXUS</span>
             <h2 className="section-title">Built for Safety and Scale</h2>
             <p style={{ marginBottom: '2rem' }}>Our platform ensures a secure environment for all participants.</p>
-            <div className="grid-2" style={{ gap: '1.5rem' }}>
+            <div className="grid-2" style={{ gap: '1rem' }}>
               <div className="small-feature">
                 <div className="icon-circle"><Shield size={20} /></div>
                 <h4>Strict Onboarding</h4>
@@ -227,7 +230,7 @@ const WebsiteLanding = () => {
               </div>
               <div className="small-feature">
                 <div className="icon-circle"><Activity size={20} /></div>
-                <h4>Transparent Comm</h4>
+                <h4>Transparent Communication</h4>
                 <p>Structured and clear interactions.</p>
               </div>
             </div>
@@ -250,7 +253,7 @@ const WebsiteLanding = () => {
             </button>
           </form>
           <p style={{ marginTop: '1.5rem', fontSize: '0.9rem', color: '#64748b' }}>
-            Applications are reviewed by our vetting team.
+            Applications are reviewed by our team of industry experts !
           </p>
         </div>
       </section>
@@ -261,18 +264,20 @@ const WebsiteLanding = () => {
           <div className="footer-brand">
             <Link to="/website" className="landing-logo">
               <img src={logo} alt="ChemNexus" />
-              <span>ChemNexus</span>
+              <span>ChemNexus Global</span>
             </Link>
-            <p>Where Chemical Businesses Connect Directly.</p>
+            <p>The Intelligent Network for Global Chemical Business.</p>
           </div>
           <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
             <div>
               <h4 style={{ color: '#f8fafc', marginBottom: '1rem' }}>Who Can Join</h4>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <li><span style={{ color: '#94a3b8' }}>Chemical Manufacturers</span></li>
-                <li><span style={{ color: '#94a3b8' }}>Distributors & Traders</span></li>
-                <li><span style={{ color: '#94a3b8' }}>Logistics Providers</span></li>
-                <li><span style={{ color: '#94a3b8' }}>Lab & Eqpt Suppliers</span></li>
+                <li><span style={{ color: '#94a3b8' }}>Chemical Distributors & Traders </span></li>
+                <li><span style={{ color: '#94a3b8' }}>Logistics Service Providers </span></li>
+                <li><span style={{ color: '#94a3b8' }}>Lab chemicals and supplies</span></li>
+                <li><span style={{ color: '#94a3b8' }}>OEM/EPC and Equipment Providers </span></li>
+                <li><span style={{ color: '#94a3b8' }}>Chemical Packing Material Providers</span></li>
               </ul>
             </div>
             <div>

@@ -117,9 +117,9 @@
 
 /* Sections */
 .landing-section {
-  padding: 6rem 5%;
+  padding: 6rem 4%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto; 
 }
 
 .dark-section {
@@ -290,13 +290,13 @@
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .feature-card {
