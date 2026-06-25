@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../config';
 import { Link } from 'react-router-dom';
-import { Shield, Zap, Globe, Smartphone, CheckCircle, ChevronRight, Lock, Activity, Users, Target, Rocket, Eye } from 'lucide-react';
+import { Shield, Zap, Globe, Smartphone, CheckCircle, ChevronRight, Lock, Activity, Users, Target, Rocket, Eye, Menu, X } from 'lucide-react';
 import './WebsiteLanding.css';
 import logo from '../assets/chemnexus-logo.png';
-import slider1 from '../assets/slider1.png';
-import slider2 from '../assets/slider2.png';
-import slider3 from '../assets/slider3.png';
+import slider1 from '../assets/image1.jpeg';
+import slider2 from '../assets/image2.jpeg';
+import slider3 from '../assets/image3.jpeg';
 
 const WebsiteLanding = () => {
   const [banners, setBanners] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Use local chemical industry images for the hero slider
   useEffect(() => {
@@ -44,7 +45,23 @@ const WebsiteLanding = () => {
           <a href="#network">Network</a>
           <a href="#contact">Contact</a>
         </div>
+        <button 
+          className="mobile-menu-btn" 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X size={28} color="#fff" /> : <Menu size={28} color="#fff" />}
+        </button>
       </nav>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="mobile-menu-dropdown">
+          <a href="#home" onClick={() => setIsMobileMenuOpen(false)}>Home</a>
+          <a href="#about" onClick={() => setIsMobileMenuOpen(false)}>About Us</a>
+          <a href="#network" onClick={() => setIsMobileMenuOpen(false)}>Network</a>
+          <a href="#contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
+        </div>
+      )}
  
       {/* Hero Section */}
       <section id="home" className="hero-section">
@@ -270,24 +287,25 @@ const WebsiteLanding = () => {
           </div>
           <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
             <div>
+              <h4 style={{ color: '#f8fafc', marginBottom: '1rem' }}>Company</h4>
+                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <li><a href="#about" style={{ color: '#94a3b8', textDecoration: 'none' }}>About Us</a></li>
+                <li><a href="#contact" style={{ color: '#94a3b8', textDecoration: 'none' }}>Contact</a></li>
+                <li><a href="#home" style={{ color: '#94a3b8', textDecoration: 'none' }}>Home</a></li>
+                <li><a href="#network" style={{ color: '#94a3b8', textDecoration: 'none' }}>Network</a></li>              
+                
+              </ul>
+             
+            </div>
+            <div>            
               <h4 style={{ color: '#f8fafc', marginBottom: '1rem' }}>Who Can Join</h4>
-              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <li><span style={{ color: '#94a3b8' }}>Chemical Manufacturers</span></li>
                 <li><span style={{ color: '#94a3b8' }}>Chemical Distributors & Traders </span></li>
                 <li><span style={{ color: '#94a3b8' }}>Logistics Service Providers </span></li>
                 <li><span style={{ color: '#94a3b8' }}>Lab chemicals and supplies</span></li>
                 <li><span style={{ color: '#94a3b8' }}>OEM/EPC and Equipment Providers </span></li>
                 <li><span style={{ color: '#94a3b8' }}>Chemical Packing Material Providers</span></li>
-              </ul>
-            </div>
-            <div>
-              <h4 style={{ color: '#f8fafc', marginBottom: '1rem' }}>Company</h4>
-              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <li><a href="#about" style={{ color: '#94a3b8', textDecoration: 'none' }}>About Us</a></li>
-                <li><a href="#contact" style={{ color: '#94a3b8', textDecoration: 'none' }}>Contact</a></li>
-                <li><a href="#home" style={{ color: '#94a3b8', textDecoration: 'none' }}>Home</a></li>
-                <li><a href="#network" style={{ color: '#94a3b8', textDecoration: 'none' }}>Network</a></li>              
-                
               </ul>
             </div>
           </div>
