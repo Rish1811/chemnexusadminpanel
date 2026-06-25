@@ -36,7 +36,7 @@ const WebsiteLanding = () => {
       <nav className="landing-navbar">
         <Link to="/website" className="landing-logo">
           <img src={logo} alt="ChemNexus" />
-          <span>ChemNexus</span>
+          <span>ChemNexus  Global</span>
         </Link>
         <div className="landing-nav-links">
           <a href="#home">Home</a>
@@ -45,7 +45,7 @@ const WebsiteLanding = () => {
           <a href="#contact">Contact</a>
         </div>
       </nav>
-
+ 
       {/* Hero Section */}
       <section id="home" className="hero-section">
         <div className="hero-background-slider">
@@ -285,11 +285,13 @@ const WebsiteLanding = () => {
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <li><a href="#about" style={{ color: '#94a3b8', textDecoration: 'none' }}>About Us</a></li>
                 <li><a href="#contact" style={{ color: '#94a3b8', textDecoration: 'none' }}>Contact</a></li>
-                <li><a href="/login" style={{ color: '#94a3b8', textDecoration: 'none' }}>Admin Portal</a></li>
+                <li><a href="#home" style={{ color: '#94a3b8', textDecoration: 'none' }}>Home</a></li>
+                <li><a href="#network" style={{ color: '#94a3b8', textDecoration: 'none' }}>Network</a></li>              
+                
               </ul>
             </div>
           </div>
-        </div>
+        </div> 
         <div className="footer-bottom">
           © 2026 ChemNexus. All rights reserved. | Invite Only. Global Access. Trusted Trade.
         </div>
