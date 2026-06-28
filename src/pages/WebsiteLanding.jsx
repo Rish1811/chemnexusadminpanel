@@ -318,7 +318,7 @@ We don't just build app—we build AI-powered solutions designed around the real
 
       {/* What We Offer */}
       <section id="network" className="landing-section">
-        <div className="split-section">
+        <div className="split-section align-items-center">
           <div>
             <span className="section-tag">🌍 WHAT WE OFFER</span>
             <h2 className="section-title">A Comprehensive Network</h2>
@@ -331,7 +331,7 @@ We don't just build app—we build AI-powered solutions designed around the real
               <li><CheckCircle className="check-icon" size={22} /> Performance and reputation tracking</li>
             </ul>
           </div>
-          <div className="about-image-container">
+          <div className="section-image-container">
             <img src={slider3} alt="Global Network" className="rounded-image" />
           </div>
         </div>
