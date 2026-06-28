@@ -142,20 +142,18 @@ Exclusively engineered for verified chemical industry stakeholders to connect wi
 
       {/* About Us Section */}
       <section id="about" className="landing-section dark-section">
-        <div className="split-section">
-          <div className="about-text">
-            <span className="section-tag">🏢 ABOUT CHEMNEXUS GLOBAL </span>
-            <h2 className="section-title">ChemNexus brings together verified industry participants</h2>
-            <p> 
+        <div className="about-content-wrapper">
+          <span className="section-tag">🏢 ABOUT CHEMNEXUS GLOBAL </span>
+          <h2 className="section-title">ChemNexus brings together verified industry participants</h2>
+          <div className="clearfix">
+            <img src={slider2} alt="Lab and About Section" className="rounded-image float-image-right" />
+            <p className="about-text-content"> 
               ChemNexus is the next-generation, AI-powered, invite-only global network built exclusively for the chemical industry.
                We bring together compliance-verified chemical manufacturers, distributors, traders, logistics partners, laboratory suppliers, equipment providers, packaging suppliers, and procurement professionals within a trusted business ecosystem.
                       With 20+ years of deep industry experience, our leadership team has worked closely with chemical manufacturers, specialty chemical companies, Oil & Gas refineries, EPC contractors, process licensors, petrochemical complexes and large matrix organizations. We understand the real-world challenges of business development—from identifying the right decision-makers and generating qualified leads to navigating complex procurement structures and building long-term business relationships.  </p>
-            <p>
+            <p className="about-text-content">
        What sets ChemNexus apart is the combination of industry expertise and technology innovation. Our experienced AI and technology team transforms these real-world industry challenges into intelligent digital solutions. By leveraging Artificial Intelligence, smart matching algorithms, data-driven networking, and automation, ChemNexus helps businesses discover relevant opportunities, connect with the right partners, and accelerate growth with greater precision and efficiency.
 We don't just build app—we build AI-powered solutions designed around the realities of the chemical industry, enabling businesses to network smarter, engage faster, and grow globally.   </p>
-          </div>
-          <div className="about-image-container">
-            <img src={slider2} alt="Lab and About Section" className="rounded-image" />
           </div>
         </div>
       </section>
