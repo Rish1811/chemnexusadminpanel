@@ -61,6 +61,10 @@ const Dashboard = () => {
     return <div style={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center', color: 'var(--text-main)' }}>Loading Live Dashboard...</div>;
   }
 
+  if (!data) {
+    return <div style={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center', color: 'var(--text-muted)' }}>Could not load dashboard data. Check backend connection.</div>;
+  }
+
   const { stats, charts, recentActivity } = data;
 
   const getIconForActivity = (iconType) => {

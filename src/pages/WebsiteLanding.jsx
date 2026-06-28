@@ -118,7 +118,7 @@ Exclusively engineered for verified chemical industry stakeholders to connect wi
           </p>  
           <div className="hero-cta-group">
             <a 
-              href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=chemnexusio@gmail.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=support@chemnexusglobal.com"
               target="_blank"
               rel="noopener noreferrer"
               className="join-btn hero-btn"
