@@ -107,16 +107,16 @@ const WebsiteLanding = () => {
 
 
         <div className="hero-content">
-          <span className="global-beta-tag">Built for Serious Trade</span>
+          <span className="global-beta-tag">Redefining global chemical commerce</span>
           <h1 className="hero-title">
-           Redefining <span className="text-orange">Global</span> <br />
-            Chemical Commerce
+          The next generation AI powered invite only <span className="text-orange">Global</span> <br />
+            chemical network
           </h1>
           <p className="hero-subtitle">
             The Next-Generation AI-Powered, Invite-Only Global Chemical Network
 Exclusively engineered for verified chemical industry stakeholders to connect with trusted partners, unlock new opportunities, source intelligently, and accelerate growth across global markets.<br />
             <strong>Trusted Connections. Intelligent Trade.</strong>
-          </p>
+          </p>  
           <div className="hero-cta-group">
             <button 
               className="join-btn hero-btn"
