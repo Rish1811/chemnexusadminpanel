@@ -407,12 +407,13 @@ We don't just build app—we build AI-powered solutions designed around the real
             <div>
               <h4 style={{ color: '#f8fafc', marginBottom: '1rem' }}>Company</h4>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <li><a href="#home" style={{ color: '#94a3b8', textDecoration: 'none' }}>Home</a></li>
                 <li><a href="#about" style={{ color: '#94a3b8', textDecoration: 'none' }}>About Us</a></li>
                 <li><a href="#offerings" style={{ color: '#94a3b8', textDecoration: 'none' }}>Offerings</a></li>
                 <li><a href="#roadmap" style={{ color: '#94a3b8', textDecoration: 'none' }}>Roadmap</a></li>
                 <li><a href="#network" style={{ color: '#94a3b8', textDecoration: 'none' }}>Network</a></li>              
                 <li><a href="#contact" style={{ color: '#94a3b8', textDecoration: 'none' }}>Contact</a></li>
-                <li><a href="#home" style={{ color: '#94a3b8', textDecoration: 'none' }}>Home</a></li>
+               
               </ul>
              
             </div>
