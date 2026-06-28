@@ -117,12 +117,15 @@ Exclusively engineered for verified chemical industry stakeholders to connect wi
             <strong>Trusted Connections. Intelligent Trade.</strong>
           </p>  
           <div className="hero-cta-group">
-            <button 
+            <a 
+              href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=chemnexusio@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="join-btn hero-btn"
-              onClick={() => window.location.href = 'mailto:chemnexusio@gmail.com'}
+              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
             >
               Request Access <ChevronRight size={18} className="icon-inline" />
-            </button>
+            </a>
           </div>
         </div>
         
