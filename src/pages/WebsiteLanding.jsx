@@ -51,7 +51,7 @@ const WebsiteLanding = () => {
     <div className="landing-page">
       {/* Navigation */}
       <nav className="landing-navbar">
-        <Link to="/website" className="landing-logo">
+        <Link to="/" className="landing-logo">
           <img src={logo} alt="ChemNexus" />
           <span>ChemNexus  Global</span>
         </Link>
@@ -113,7 +113,6 @@ const WebsiteLanding = () => {
             chemical network
           </h1>
           <p className="hero-subtitle">
-            The Next-Generation AI-Powered, Invite-Only Global Chemical Network
 Exclusively engineered for verified chemical industry stakeholders to connect with trusted partners, unlock new opportunities, source intelligently, and accelerate growth across global markets.<br />
             <strong>Trusted Connections. Intelligent Trade.</strong>
           </p>  
@@ -206,9 +205,9 @@ We don't just build app—we build AI-powered solutions designed around the real
 
       {/* Roadmap Section */}
       <section id="roadmap" className="landing-section dark-section roadmap-section">
-        <div className="mb-2">
+        <div className="mb-2"> 
           <span className="section-tag">🚀 PLATFORM ROADMAP</span>
-          <h2 className="section-title">ChemNexus is Continuously Evolving</h2>
+          <h2 className="section-title">ChemNexus is Continuously Evolving (Coming soon)</h2>
           <p style={{ maxWidth: '900px', margin: '0 0 2rem 0' }}>
             ChemNexus is continuously evolving into the most comprehensive digital ecosystem for the global chemical industry.
           </p>
@@ -398,7 +397,7 @@ We don't just build app—we build AI-powered solutions designed around the real
       <footer className="landing-footer">
         <div className="footer-content">
           <div className="footer-brand">
-            <Link to="/website" className="landing-logo">
+            <Link to="/" className="landing-logo">
               <img src={logo} alt="ChemNexus" />
               <span>ChemNexus Global</span>
             </Link>

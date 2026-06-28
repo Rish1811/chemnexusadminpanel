@@ -24,14 +24,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/website" element={<WebsiteLanding />} />
+        <Route path="/" element={<WebsiteLanding />} />
         <Route 
-          path="/login" 
-          element={isAuthenticated ? <Navigate to="/" /> : <Login onLogin={setIsAuthenticated} />} 
+          path="/admin/login"  
+          element={isAuthenticated ? <Navigate to="/admin" /> : <Login onLogin={setIsAuthenticated} />} 
         />
         <Route 
-          path="/" 
-          element={isAuthenticated ? <Layout onLogout={() => setIsAuthenticated(false)} /> : <Navigate to="/login" />}
+          path="/admin" 
+          element={isAuthenticated ? <Layout onLogout={() => setIsAuthenticated(false)} /> : <Navigate to="/admin/login" />}
         >
           <Route index element={<Dashboard />} />
           <Route path="directory" element={<Directory />} />

@@ -22,43 +22,43 @@ const Layout = ({ onLogout }) => {
         </div>
         
         <nav className="sidebar-nav">
-          <NavLink to="/" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin" end className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Home size={20} />
             Dashboard
           </NavLink>
-          <NavLink to="/directory" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/directory" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <BookOpen size={20} />
             Directory
           </NavLink>
-          <NavLink to="/inventory" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/inventory" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Package size={20} />
             Interested
           </NavLink>
-          <NavLink to="/profile" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/profile" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <User size={20} />
             Profile
           </NavLink>
 
           <div style={{ margin: '16px 0', borderTop: '1px solid #272c39' }}></div>
 
-          <NavLink to="/ad-management" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/ad-management" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Target size={20} />
             Banners & Ads
           </NavLink>
-          <NavLink to="/website-banners" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/website-banners" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <ImageIcon size={20} />
             Website Banners
           </NavLink>
-          <NavLink to="/users" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/users" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Users size={20} />
             User Mgmt
           </NavLink>
-          <NavLink to="/posts" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/posts" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <FileText size={20} />
             Post Mgmt
           </NavLink>
           
-          <NavLink to="/settings" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/settings" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Settings size={20} />
             Settings
           </NavLink>
@@ -66,19 +66,19 @@ const Layout = ({ onLogout }) => {
           <div style={{ padding: '16px 4px 8px', fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '1px' }}>
             Policies & Support
           </div>
-          <NavLink to="/support/terms" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/support/terms" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <FileText size={20} />
             Terms & Conditions
           </NavLink>
-          <NavLink to="/support/privacy" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/support/privacy" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Shield size={20} />
             Privacy Policy
           </NavLink>
-          <NavLink to="/support/advertisement" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/support/advertisement" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <Megaphone size={20} />
             Ad Policy
           </NavLink>
-          <NavLink to="/faqs" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
+          <NavLink to="/admin/faqs" className={({isActive}) => isActive ? "nav-item active-blue" : "nav-item"}>
             <HelpCircle size={20} />
             Help & FAQs
           </NavLink>
