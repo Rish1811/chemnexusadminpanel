@@ -119,7 +119,7 @@ Exclusively engineered for verified chemical industry stakeholders to connect wi
           <div className="hero-cta-group">
             <button 
               className="join-btn hero-btn"
-              onClick={() => window.open('https://mail.google.com/mail/?view=cm&fs=1&to=chemnexusio@gmail.com', '_blank')}
+              onClick={() => window.location.href = 'mailto:chemnexusio@gmail.com'}
             >
               Request Access <ChevronRight size={18} className="icon-inline" />
             </button>
