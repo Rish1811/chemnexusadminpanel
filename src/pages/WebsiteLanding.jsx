@@ -142,7 +142,7 @@ Exclusively engineered for verified chemical industry stakeholders to connect wi
 
       {/* About Us Section */}
       <section id="about" className="landing-section dark-section">
-        <div className="split-section align-items-center">
+        <div className="split-section">
           <div className="about-text">
             <span className="section-tag">🏢 ABOUT CHEMNEXUS GLOBAL </span>
             <h2 className="section-title">ChemNexus brings together verified industry participants</h2>
